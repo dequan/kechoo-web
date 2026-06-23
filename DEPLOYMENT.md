@@ -219,3 +219,399 @@ These are practical B2B ecommerce drafts and should be reviewed before productio
 - Legal draft pages present.
 - Test site routes return 200.
 - Product test data remains clearly marked as non-production.
+
+## aaPanel VPS deployment runbook
+
+Use this runbook when deploying the public-lite version to a VPS with aaPanel installed.
+
+### 1. aaPanel environment
+
+Install or confirm these aaPanel App Store components:
+
+- Nginx
+- MySQL 8.0 or MariaDB 10.6+
+- PHP 8.3
+- phpMyAdmin, optional
+- Redis, optional for later optimization
+
+Enable these PHP 8.3 extensions:
+
+- `mysqli`
+- `pdo_mysql`
+- `curl`
+- `mbstring`
+- `xml`
+- `zip`
+- `gd` or `imagick`
+- `intl`
+- `fileinfo`
+- `exif`
+- `opcache`
+
+Basic server safety:
+
+- Change the default aaPanel port.
+- Use a strong aaPanel password.
+- Open only required ports: SSH, aaPanel, 80, 443.
+- Do not expose MySQL port 3306 to the public internet.
+- Prefer SSH keys over password login.
+
+### 2. Cloudflare DNS before deployment
+
+In Cloudflare DNS, create:
+
+```txt
+A      @      <your-vps-ip>
+CNAME  www    kechoo.com
+```
+
+Recommended order:
+
+1. Start with DNS-only records while installing and issuing SSL.
+2. Confirm `http://kechoo.com` and `https://kechoo.com` work on the origin.
+3. Then enable Cloudflare proxy.
+
+Keep email records DNS-only:
+
+- MX
+- SPF TXT
+- DKIM TXT/CNAME
+- DMARC TXT
+
+### 3. Create the site in aaPanel
+
+In aaPanel:
+
+1. Go to `Website`.
+2. Add site:
+
+```txt
+Domain: kechoo.com
+Alias: www.kechoo.com
+PHP: 8.3
+Root: /www/wwwroot/kechoo.com
+```
+
+3. Create a database:
+
+```txt
+Database: kechoo_wp
+User: kechoo_wp
+Password: strong generated password
+```
+
+Save the database name, user, and password. You will need them for WordPress.
+
+### 4. Install WordPress
+
+Use either aaPanel's WordPress installer or a manual WordPress install.
+
+For manual install:
+
+```bash
+cd /www/wwwroot/kechoo.com
+wget https://wordpress.org/latest.tar.gz
+tar -xzf latest.tar.gz
+mv wordpress/* .
+rm -rf wordpress latest.tar.gz
+chown -R www:www /www/wwwroot/kechoo.com
+```
+
+Then open:
+
+```txt
+http://kechoo.com
+```
+
+Complete the WordPress installer with the database credentials from aaPanel.
+
+Recommended initial admin account:
+
+- Do not use `admin`.
+- Use a strong password.
+- Store the password in a password manager.
+
+### 5. Install WooCommerce
+
+In WordPress admin:
+
+1. Plugins → Add New.
+2. Install WooCommerce.
+3. Activate WooCommerce.
+4. Configure minimally:
+   - Currency: USD
+   - Store country: China
+   - Taxes: off for public-lite unless you have a tax workflow
+   - Payments: skip for now
+   - Shipping: keep quote-first or temporary manual rules
+
+The public-lite version does not need PayPal or online checkout to launch.
+
+### 6. Deploy KECHOO theme and plugin
+
+SSH into the VPS:
+
+```bash
+cd /tmp
+git clone https://github.com/dequan/kechoo-web.git
+cd kechoo-web
+git checkout v0.2-public-lite
+```
+
+Copy only the KECHOO theme and KECHOO plugin:
+
+```bash
+rsync -av --delete wp-content/themes/kechoo/ /www/wwwroot/kechoo.com/wp-content/themes/kechoo/
+rsync -av --delete wp-content/plugins/kechoo-core/ /www/wwwroot/kechoo.com/wp-content/plugins/kechoo-core/
+chown -R www:www /www/wwwroot/kechoo.com/wp-content/themes/kechoo
+chown -R www:www /www/wwwroot/kechoo.com/wp-content/plugins/kechoo-core
+```
+
+Do not copy these development-only paths into the production web root:
+
+- `node_modules/`
+- `test-site/`
+- `package.json`
+- `package-lock.json`
+- `.wordpress-playground/`
+- `data-templates/`
+
+The `data-templates/` folder is for preparing catalog data locally, not for public web serving.
+
+### 7. Activate KECHOO in WordPress
+
+In WordPress admin:
+
+1. Plugins → Activate `KECHOO Core`.
+2. Appearance → Themes → Activate `KECHOO`.
+3. Settings → Permalinks → choose `Post name` → Save.
+
+KECHOO Core should create these pages:
+
+- `/find-your-blade/`
+- `/request-a-quote/`
+- `/distributors/`
+- `/applications/`
+- `/technology/`
+- `/resources/`
+- `/about/`
+- `/shipping/`
+- `/privacy-policy/`
+- `/terms/`
+- `/returns-refunds/`
+- `/customs-duties/`
+
+If a page is missing, deactivate and reactivate KECHOO Core once, then save permalinks again.
+
+### 8. Production WordPress settings
+
+Settings → General:
+
+```txt
+Site Title: KECHOO
+Tagline: Choose Better Cutting
+WordPress Address: https://kechoo.com
+Site Address: https://kechoo.com
+Timezone: Asia/Shanghai or the preferred business timezone
+```
+
+Settings → Reading:
+
+- Homepage should show the KECHOO front page.
+- Search engine visibility should be unchecked when you are ready for Google indexing.
+- If you are still testing publicly, keep it noindex until final review.
+
+### 9. SSL in aaPanel
+
+In aaPanel:
+
+1. Website → `kechoo.com` → SSL.
+2. Apply for Let's Encrypt SSL.
+3. Include both:
+   - `kechoo.com`
+   - `www.kechoo.com`
+4. Enable force HTTPS only after HTTPS works.
+
+Test:
+
+```txt
+https://kechoo.com
+https://www.kechoo.com
+```
+
+After the origin certificate works, switch Cloudflare SSL/TLS mode to:
+
+```txt
+Full (strict)
+```
+
+Then enable:
+
+- Always Use HTTPS
+- Automatic HTTPS Rewrites
+- Brotli
+- HTTP/3
+
+Avoid full-page HTML caching at this stage.
+
+### 10. Cloudflare cache rules
+
+Use standard caching first.
+
+Do not cache these paths:
+
+```txt
+/wp-admin/*
+/wp-login.php
+/cart/*
+/checkout/*
+/my-account/*
+/request-a-quote/*
+```
+
+For public-lite, cart and checkout are not primary paths, but keeping these exclusions avoids future WooCommerce problems.
+
+### 11. Email receiving
+
+Cloudflare Email Routing can be used for early receiving:
+
+```txt
+sales@kechoo.com   -> your existing mailbox
+info@kechoo.com    -> your existing mailbox
+support@kechoo.com -> your existing mailbox
+orders@kechoo.com  -> your existing mailbox
+```
+
+This is enough to receive inquiries at launch, but it is not a full mailbox. For sending replies as `@kechoo.com`, use a real mailbox provider such as Zoho Mail, Google Workspace, Microsoft 365, or another SMTP-capable provider.
+
+### 12. SMTP for WordPress
+
+Install one SMTP plugin:
+
+- FluentSMTP, or
+- WP Mail SMTP
+
+Configure:
+
+```txt
+From Email: sales@kechoo.com
+From Name: KECHOO
+```
+
+Use authenticated SMTP from your mailbox provider. Then test:
+
+1. Submit `/request-a-quote/`.
+2. Confirm the email arrives.
+3. Confirm it does not go to spam.
+
+If SMTP is not configured, WordPress/PHP mail may fail silently or land in spam.
+
+### 13. Backups in aaPanel
+
+Create aaPanel scheduled tasks:
+
+Daily database backup:
+
+```txt
+Database: kechoo_wp
+Retention: 14-30 days
+```
+
+Daily website file backup:
+
+```txt
+Path: /www/wwwroot/kechoo.com
+Retention: 14-30 days
+```
+
+Strong recommendation:
+
+- Store a copy outside the VPS.
+- Use S3, FTP, Google Drive, another server, or host-level snapshot.
+- Test one restore after launch.
+
+### 14. Security baseline
+
+WordPress:
+
+- Do not use `admin` as the admin username.
+- Use strong passwords.
+- Create separate accounts for operators.
+- Use Shop Manager or a limited role for product operators.
+- Delete unused themes.
+- Delete unused plugins.
+- Update WordPress, WooCommerce, theme, and plugins on a schedule.
+- Install a login limit plugin.
+
+aaPanel:
+
+- Change the panel port.
+- Use strong panel password.
+- Keep panel and stack updated.
+- Do not expose MySQL publicly.
+- Keep SSH restricted.
+
+Cloudflare:
+
+- Enable basic WAF protections.
+- Add Turnstile to RFQ later if spam appears.
+- Do not over-tune security rules before the site is stable.
+
+### 15. Public-lite acceptance test
+
+After deployment, check these URLs:
+
+```txt
+https://kechoo.com/
+https://kechoo.com/shop/
+https://kechoo.com/products/
+https://kechoo.com/applications/
+https://kechoo.com/technology/
+https://kechoo.com/resources/
+https://kechoo.com/about/
+https://kechoo.com/shipping/
+https://kechoo.com/contact/
+https://kechoo.com/find-your-blade/
+https://kechoo.com/request-a-quote/
+https://kechoo.com/distributors/
+https://kechoo.com/privacy-policy/
+https://kechoo.com/terms/
+https://kechoo.com/returns-refunds/
+https://kechoo.com/customs-duties/
+```
+
+Expected public-lite behavior:
+
+- Product catalog loads.
+- Product filters work.
+- Product cards show `Quote on request`.
+- Product pages show `Request price and availability`.
+- No public test price is visible.
+- No `Add to cart` button is visible.
+- RFQ form submits.
+- RFQ email arrives.
+- Mobile menu works.
+- Footer legal links work.
+- SSL lock is valid.
+- No Cloudflare redirect loop.
+
+### 16. Search Console and GA4 after deployment
+
+After the site is stable:
+
+1. Create Google Search Console domain property for `kechoo.com`.
+2. Add Google's TXT verification record in Cloudflare DNS.
+3. Verify the domain.
+4. Submit sitemap:
+
+```txt
+https://kechoo.com/wp-sitemap.xml
+```
+
+For GA4:
+
+1. Create GA4 property.
+2. Create Web data stream for `https://kechoo.com`.
+3. Add the measurement ID with Site Kit or a lightweight header/footer plugin.
+
+Do not over-focus on analytics before the site has real content and Search Console indexing data.
