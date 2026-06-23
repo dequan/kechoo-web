@@ -1,0 +1,11 @@
+{
+  "name": "kechoo-wordpress-site",
+  "private": true,
+  "scripts": {
+    "wp:start": "wp-playground-cli start --path=./wp-content --blueprint=./test-site/blueprint.json --mount=./test-site:/wordpress/kechoo-test-site --wp=latest --php=8.3 --port=9400 --skip-browser",
+    "wp:reset": "npm run wp:start -- --reset"
+  },
+  "devDependencies": {
+    "@wp-playground/cli": "^3.1.40"
+  }
+}
