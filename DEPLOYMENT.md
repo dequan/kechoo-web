@@ -6,7 +6,7 @@ This document captures the deployment decisions for `kechoo.com` and separates w
 
 Seal a stage version after the current deploy-prep changes. Do not wait for final product photos, final pricing, exact stock, PayPal credentials, or precise shipping rules. Those belong in the next data and commerce iteration.
 
-Suggested tag: `v0.1-deploy-prep`.
+Suggested next tag after these changes: `v0.2-public-lite`.
 
 ## Domain and DNS
 
@@ -152,7 +152,7 @@ Recommended first production approach:
 
 ## PayPal
 
-Do not block v0.1 on PayPal.
+Do not block the public-lite launch on PayPal.
 
 When ready:
 
@@ -162,6 +162,41 @@ When ready:
 4. Switch to live credentials only after small internal test orders pass.
 
 Until then, local development uses a no-payment test gateway.
+
+## Public-lite product data
+
+For the first public version, use `data-templates/products-public-lite.csv`.
+
+Required product data:
+
+- SKU
+- English product title
+- application: Food & Bone, Wood, or Metal
+- blade technology: Hardened, Bi-Metal, or Carbide
+- length, width, and thickness
+- tooth pitch / TPI
+- short English product description
+- at least one product or product-family image
+
+Recommended but not launch-blocking:
+
+- cut material
+- machine compatibility
+- tooth form
+- backing material
+- tooth material
+- recommended cutting range
+- selection rationale
+- dispatch estimate
+- MOQ for custom sizes
+
+Can wait for ecommerce phase:
+
+- public USD price
+- exact stock quantity
+- online checkout
+- PayPal credentials
+- exact automatic shipping rates
 
 ## Legal pages
 
@@ -184,4 +219,3 @@ These are practical B2B ecommerce drafts and should be reviewed before productio
 - Legal draft pages present.
 - Test site routes return 200.
 - Product test data remains clearly marked as non-production.
-

@@ -39,12 +39,12 @@ $applications = array(
 			<h1 id="kechoo-hero-title"><?php esc_html_e( 'Choose Better Cutting.', 'kechoo' ); ?></h1>
 			<p class="kechoo-hero__lead"><?php esc_html_e( 'Hardened, bi-metal and carbide bandsaw blades engineered for consistent results.', 'kechoo' ); ?></p>
 			<div class="kechoo-actions">
-				<a class="kechoo-button kechoo-button--light" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'Shop In-Stock', 'kechoo' ); ?></a>
+				<a class="kechoo-button kechoo-button--light" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'View Blade Range', 'kechoo' ); ?></a>
 				<a class="kechoo-button kechoo-button--outline-light" href="<?php echo esc_url( home_url( '/request-a-quote/' ) ); ?>"><?php esc_html_e( 'Request a Quote', 'kechoo' ); ?></a>
 			</div>
 			<ul class="kechoo-hero__proof" aria-label="<?php esc_attr_e( 'KECHOO product strengths', 'kechoo' ); ?>">
 				<li><?php esc_html_e( 'Application-led selection', 'kechoo' ); ?></li>
-				<li><?php esc_html_e( 'Verified stock specifications', 'kechoo' ); ?></li>
+				<li><?php esc_html_e( 'Quote-first product guidance', 'kechoo' ); ?></li>
 				<li><?php esc_html_e( 'Global supply from China', 'kechoo' ); ?></li>
 			</ul>
 		</div>
@@ -77,7 +77,7 @@ $applications = array(
 	<section class="kechoo-selector-band" aria-labelledby="selector-title">
 		<div class="kechoo-selector-band__intro">
 			<h2 id="selector-title"><?php esc_html_e( 'Find Your Blade', 'kechoo' ); ?></h2>
-			<p><?php esc_html_e( 'Answer a few questions to narrow the catalog. If there is no verified stock match, send the same details to our technical team.', 'kechoo' ); ?></p>
+			<p><?php esc_html_e( 'Answer a few questions to narrow the catalog. Send the same details to our technical team for price, lead time, and availability.', 'kechoo' ); ?></p>
 		</div>
 		<div class="kechoo-selector-band__form">
 			<?php
@@ -122,10 +122,10 @@ $applications = array(
 	<section class="kechoo-section kechoo-stock" aria-labelledby="stock-title">
 		<div class="kechoo-section__heading kechoo-section__heading--split">
 			<div>
-				<p class="kechoo-kicker kechoo-kicker--dark"><?php esc_html_e( 'Ready to ship', 'kechoo' ); ?></p>
+				<p class="kechoo-kicker kechoo-kicker--dark"><?php esc_html_e( 'Quote-first catalog', 'kechoo' ); ?></p>
 				<h2 id="stock-title"><?php esc_html_e( 'Hot-Selling Specifications', 'kechoo' ); ?></h2>
 			</div>
-			<a class="kechoo-text-link" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'View all in-stock blades', 'kechoo' ); ?> <span aria-hidden="true">→</span></a>
+			<a class="kechoo-text-link" href="<?php echo esc_url( $shop_url ); ?>"><?php esc_html_e( 'View blade range', 'kechoo' ); ?> <span aria-hidden="true">→</span></a>
 		</div>
 		<?php if ( class_exists( 'WooCommerce' ) ) : ?>
 			<div class="kechoo-stock__products"><?php echo do_shortcode( '[products limit="4" columns="4" orderby="popularity" visibility="visible"]' ); ?></div>
@@ -160,4 +160,3 @@ $applications = array(
 	</section>
 </main>
 <?php get_footer(); ?>
-

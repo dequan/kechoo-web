@@ -958,6 +958,39 @@ p {
   font-weight: 700;
 }
 
+.kechoo-quote-price {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.28rem 0.55rem;
+  background: var(--kechoo-gray);
+  color: var(--kechoo-graphite);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.kechoo-loop-quote-button {
+  width: 100%;
+  margin-block-start: var(--space-2);
+}
+
+.kechoo-public-lite-panel {
+  margin-block: var(--space-5);
+  padding: var(--space-5);
+  border: 1px solid var(--kechoo-border);
+  background: var(--kechoo-gray);
+}
+
+.kechoo-public-lite-panel h2 {
+  margin-block-end: var(--space-2);
+  font-size: 1.45rem;
+}
+
+.kechoo-public-lite-panel p {
+  max-width: 52ch;
+  color: var(--kechoo-ink-muted);
+}
+
 .kechoo-shop-filter-panel {
   display: grid;
   gap: var(--space-5);

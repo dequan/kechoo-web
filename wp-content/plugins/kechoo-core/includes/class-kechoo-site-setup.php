@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Kechoo_Site_Setup {
-	const CONTENT_VERSION = '1.3.1';
+	const CONTENT_VERSION = '1.4.0';
 
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'maybe_ensure_pages' ), 30 );
@@ -167,7 +167,7 @@ final class Kechoo_Site_Setup {
 		?>
 		<div class="wrap kechoo-admin-guide">
 			<h1>KECHOO 上品指南</h1>
-			<p class="description">给中文运营同事使用：先保证产品能被选对，再补齐价格、库存、图片和运费。英文前台保持不变。</p>
+			<p class="description">给中文运营同事使用：轻量公开版先保证产品能被看懂、能筛选、能询盘。价格、库存、在线支付和精确运费可后续补齐。</p>
 
 			<div class="kechoo-admin-guide__actions">
 				<a class="button button-primary" href="<?php echo esc_url( $links['add_product'] ); ?>">添加产品</a>
@@ -182,7 +182,7 @@ final class Kechoo_Site_Setup {
 					<ol>
 						<li><strong>标题：</strong>建议使用 “Blade type + length × width × thickness — TPI”，例如 M42 Bi-Metal Blade 4115 × 34 × 1.10 mm — 3/4 TPI。</li>
 						<li><strong>SKU：</strong>保持唯一，方便报价、库存和后续导入。</li>
-						<li><strong>价格与库存：</strong>现货产品必须填写 USD 价格、库存数量和库存状态。</li>
+						<li><strong>价格与库存：</strong>轻量公开版可以先留空或只内部维护；前台默认显示 Quote on request，不直接成交。</li>
 						<li><strong>分类：</strong>至少选择应用场景、锯条工艺、切割材料。机器适配不确定时可以先留空。</li>
 						<li><strong>KECHOO 技术参数：</strong>填写长度、宽度、厚度、TPI、齿形、材料、发货时间、是否支持定制。</li>
 						<li><strong>图片：</strong>先用统一风格主图；后续再补真实包装、齿形、切割场景图。</li>
@@ -202,10 +202,10 @@ final class Kechoo_Site_Setup {
 				<section>
 					<h2>发布前检查</h2>
 					<ul>
-						<li>产品页能看到价格、库存、发货时间和 Request a Custom Size。</li>
+						<li>产品页能看到发货说明、技术参数和 Request price and availability。</li>
 						<li>商店列表能看到应用、工艺、尺寸和 TPI，不需要点开才知道规格。</li>
-						<li>加入购物车、结账页、运费显示正常。</li>
-						<li>定制或批量产品不要强行在线售卖，优先走询盘。</li>
+						<li>前台不要出现测试价格、Add to cart 或让客户误以为可以直接付款。</li>
+						<li>定制、批量、经销商和不确定规格全部优先走询盘。</li>
 					</ul>
 				</section>
 

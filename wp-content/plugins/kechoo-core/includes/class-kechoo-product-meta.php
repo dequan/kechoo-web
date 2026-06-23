@@ -29,9 +29,39 @@ final class Kechoo_Product_Meta {
 	public static function init() {
 		add_action( 'add_meta_boxes_product', array( __CLASS__, 'add_meta_box' ) );
 		add_action( 'save_post_product', array( __CLASS__, 'save_meta' ) );
+		add_action( 'wp', array( __CLASS__, 'apply_public_lite_mode' ) );
 		add_action( 'woocommerce_after_shop_loop_item_title', array( __CLASS__, 'render_loop_summary' ), 11 );
 		add_action( 'woocommerce_single_product_summary', array( __CLASS__, 'render_buying_note' ), 35 );
 		add_action( 'woocommerce_after_single_product_summary', array( __CLASS__, 'render_specifications' ), 6 );
+	}
+
+	public static function apply_public_lite_mode() {
+		if ( ! function_exists( 'kechoo_is_public_lite_mode' ) || ! kechoo_is_public_lite_mode() ) {
+			return;
+		}
+
+		remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+		remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
+		add_filter( 'woocommerce_get_price_html', array( __CLASS__, 'public_lite_price_html' ), 20, 2 );
+		add_filter( 'woocommerce_is_purchasable', array( __CLASS__, 'public_lite_is_purchasable' ) );
+		add_action( 'woocommerce_after_shop_loop_item', array( __CLASS__, 'render_loop_quote_button' ), 10 );
+		add_action( 'woocommerce_single_product_summary', array( __CLASS__, 'render_public_lite_quote_panel' ), 30 );
+	}
+
+	public static function public_lite_price_html( $price, $product ) {
+		if ( ! function_exists( 'kechoo_is_public_lite_mode' ) || ! kechoo_is_public_lite_mode() ) {
+			return $price;
+		}
+
+		return '<span class="kechoo-quote-price">' . esc_html__( 'Quote on request', 'kechoo-core' ) . '</span>';
+	}
+
+	public static function public_lite_is_purchasable( $is_purchasable ) {
+		if ( ! function_exists( 'kechoo_is_public_lite_mode' ) || ! kechoo_is_public_lite_mode() ) {
+			return $is_purchasable;
+		}
+
+		return false;
 	}
 
 	public static function add_meta_box() {
@@ -113,7 +143,39 @@ final class Kechoo_Product_Meta {
 		if ( $custom ) {
 			printf( '<p><strong>%1$s</strong> %2$s</p>', esc_html__( 'Custom sizes:', 'kechoo-core' ), esc_html( $custom ) );
 		}
-		printf( '<a class="button alt kechoo-product-quote" href="%1$s">%2$s</a>', esc_url( $quote_url ), esc_html__( 'Request a Custom Size', 'kechoo-core' ) );
+		if ( ! function_exists( 'kechoo_is_public_lite_mode' ) || ! kechoo_is_public_lite_mode() ) {
+			printf( '<a class="button alt kechoo-product-quote" href="%1$s">%2$s</a>', esc_url( $quote_url ), esc_html__( 'Request a Custom Size', 'kechoo-core' ) );
+		}
+		echo '</div>';
+	}
+
+	public static function render_loop_quote_button() {
+		global $product;
+		if ( ! $product ) {
+			return;
+		}
+
+		printf(
+			'<a class="button kechoo-loop-quote-button" href="%1$s">%2$s</a>',
+			esc_url( self::quote_url( $product ) ),
+			esc_html__( 'Request quote', 'kechoo-core' )
+		);
+	}
+
+	public static function render_public_lite_quote_panel() {
+		global $product;
+		if ( ! $product ) {
+			return;
+		}
+
+		echo '<div class="kechoo-public-lite-panel">';
+		echo '<h2>' . esc_html__( 'Need this blade?', 'kechoo-core' ) . '</h2>';
+		echo '<p>' . esc_html__( 'Send the specification, quantity, and destination. KECHOO will confirm price, lead time, shipping, and the best blade choice before you order.', 'kechoo-core' ) . '</p>';
+		printf(
+			'<a class="button alt kechoo-product-quote" href="%1$s">%2$s</a>',
+			esc_url( self::quote_url( $product ) ),
+			esc_html__( 'Request price and availability', 'kechoo-core' )
+		);
 		echo '</div>';
 	}
 
@@ -188,5 +250,15 @@ final class Kechoo_Product_Meta {
 	private static function first_term_name( $post_id, $taxonomy ) {
 		$terms = get_the_terms( $post_id, $taxonomy );
 		return $terms && ! is_wp_error( $terms ) ? $terms[0]->name : '';
+	}
+
+	private static function quote_url( $product ) {
+		return add_query_arg(
+			array(
+				'product_id' => $product->get_id(),
+				'product'    => $product->get_name(),
+			),
+			home_url( '/request-a-quote/' )
+		);
 	}
 }

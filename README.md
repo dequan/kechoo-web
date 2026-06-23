@@ -8,6 +8,7 @@ Custom WordPress and WooCommerce implementation for **KECHOO — Choose Better C
 - `wp-content/plugins/kechoo-core`: product taxonomy, technical product fields, blade selector, and RFQ workflow
 - `PRODUCT.md`, `DESIGN.md`, `SITE-BRIEF.md`: approved product and design direction
 - `DEPLOYMENT.md`: deployment, Cloudflare, email, SMTP, backup, analytics, PayPal, shipping, and launch decisions
+- `data-templates/`: CSV and fill-in templates for first public product and launch information
 
 ## WordPress installation
 
@@ -41,3 +42,9 @@ Run `npm run wp:reset` when you need a clean test database. Resetting deletes th
 PayPal should be added back when Sandbox or merchant credentials are ready. Until then the local checkout uses the no-payment test gateway to keep ordering flows simple and deterministic.
 
 For deployment planning, see `DEPLOYMENT.md`. The current recommended milestone is `v0.1-deploy-prep`.
+
+## Public-lite launch mode
+
+The current site is configured as an RFQ-first public catalog. Products can be browsed, filtered, and used to start quote requests, but the frontend does not expose test prices, Add to cart buttons, or checkout as the primary buyer path.
+
+Use `data-templates/products-public-lite.csv` to prepare the first real product batch. Price, stock, PayPal, and exact shipping rules can wait until the ecommerce phase.

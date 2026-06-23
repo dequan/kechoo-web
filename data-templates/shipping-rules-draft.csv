@@ -1,0 +1,5 @@
+zone_name,countries,method,public_checkout_enabled,base_cost_usd,free_shipping_threshold_usd,estimated_dispatch,estimated_transit,notes
+United States and Canada,"US,CA",Flat rate or RFQ,no,,,Confirm by quotation,Confirm by quotation,Use RFQ until real courier rates are known
+Europe,"GB,DE,FR,IT,ES,NL,BE,PL,SE,DK,FI,NO,AT,IE,PT,CZ",Flat rate or RFQ,no,,,Confirm by quotation,Confirm by quotation,Use RFQ until duties and courier rates are clear
+Southeast Asia,"SG,MY,TH,VN,ID,PH",Flat rate or RFQ,no,,,Confirm by quotation,Confirm by quotation,May become first online-shipping region after testing
+Other countries,"*",RFQ,no,,,Confirm by quotation,Confirm by quotation,Keep quote-only for launch

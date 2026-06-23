@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'KECHOO_THEME_VERSION', '1.1.1' );
+define( 'KECHOO_THEME_VERSION', '1.2.0' );
 
 function kechoo_theme_setup() {
 	load_theme_textdomain( 'kechoo', get_template_directory() . '/languages' );
