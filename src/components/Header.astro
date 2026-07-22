@@ -1,0 +1,23 @@
+---
+import { navigation, site } from '../data/site';
+---
+
+<header class="site-header" data-site-header>
+  <div class="site-header__inner">
+    <a class="brand" href="/" aria-label={`${site.name} home`}>
+      <span class="brand__name">Band Saw Blade</span>
+      <span class="brand__sub">Supply</span>
+      <span class="brand__cut" aria-hidden="true"></span>
+    </a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+      <span>Menu</span>
+      <span aria-hidden="true"></span>
+    </button>
+    <nav class="site-nav" id="primary-navigation" aria-label="Primary navigation">
+      <ul>
+        {navigation.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+    <a class="header-quote" href="/request-a-quote/">Request a quote</a>
+  </div>
+</header>

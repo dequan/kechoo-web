@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RfqPanel from '../components/RfqPanel.astro';
+---
+
+<BaseLayout
+  title="Bandsaw blade distributor and OEM supply"
+  description="Discuss bulk bandsaw blade supply, OEM packaging, distributor pricing and regional product mix for food, wood and metal cutting markets."
+>
+  <main id="main-content">
+    <header class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / Distributors</nav>
+      <p class="kicker kicker--red">For volume buyers</p>
+      <h1>Build a dependable bandsaw blade range.</h1>
+      <p>Band Saw Blade Supply supports distributors and industrial buyers with product mix planning, OEM packaging discussion and quotation by application demand.</p>
+    </header>
+    <section class="section">
+      <div class="proof-grid">
+        <article class="proof-card"><p class="kicker kicker--red">01</p><h3>Regional product mix</h3><p>Focus on sizes and blade families your market actually buys.</p></article>
+        <article class="proof-card"><p class="kicker kicker--red">02</p><h3>OEM packaging</h3><p>Discuss label, pack quantity and documentation requirements before production.</p></article>
+        <article class="proof-card"><p class="kicker kicker--red">03</p><h3>Repeat quotation data</h3><p>Keep SKU, application and machine details structured for faster reorders.</p></article>
+      </div>
+    </section>
+    <RfqPanel title="Discuss distributor supply" body="Send your territory, main application market, estimated volume and packaging requirement. We will help prepare a practical product range." />
+  </main>
+</BaseLayout>

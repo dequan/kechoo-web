@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { resources } from '../../data/site';
+---
+
+<BaseLayout
+  title="Bandsaw blade selection resources"
+  description="Technical guides for measuring bandsaw blades, choosing TPI and preparing B2B quotation details for food, wood and metal cutting."
+>
+  <main id="main-content">
+    <header class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / Resources</nav>
+      <p class="kicker kicker--red">Selection guides</p>
+      <h1>Bandsaw blade resources</h1>
+      <p>Short, practical guides that answer real buyer questions before they request a quote.</p>
+    </header>
+    <section class="section">
+      <div class="resource-grid">
+        {resources.map((resource) => (
+          <article class="resource-card">
+            <p class="resource-card__meta">{resource.category} / {resource.date}</p>
+            <h3><a href={`/resources/${resource.slug}/`}>{resource.title}</a></h3>
+            <p>{resource.description}</p>
+            <ul class="resource-card__queries">
+              {resource.relatedQueries.slice(0, 2).map((query) => <li>{query}</li>)}
+            </ul>
+            <a class="text-link" href={`/resources/${resource.slug}/`}>Read guide <span aria-hidden="true">-></span></a>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>

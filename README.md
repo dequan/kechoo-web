@@ -1,50 +1,72 @@
-# KECHOO WordPress Site
+# Band Saw Blade Supply Astro site
 
-Custom WordPress and WooCommerce implementation for **KECHOO — Choose Better Cutting.**
+Static Astro website for **Band Saw Blade Supply**.
+
+The site is focused on B2B bandsaw blade discovery and quotation:
+
+- product discovery without cart or checkout
+- application, blade technology and specification pages
+- email-based quotation flows with room for buyers to share WhatsApp details
+- structured product data for search engines and future content expansion
+- reusable industrial visual assets from the previous bandsaw blade project
 
 ## Project structure
 
-- `wp-content/themes/kechoo`: custom responsive theme and WooCommerce presentation
-- `wp-content/plugins/kechoo-core`: product taxonomy, technical product fields, blade selector, and RFQ workflow
-- `PRODUCT.md`, `DESIGN.md`, `SITE-BRIEF.md`: approved product and design direction
-- `DEPLOYMENT.md`: deployment, Cloudflare, email, SMTP, backup, analytics, PayPal, shipping, and launch decisions
-- `data-templates/`: CSV and fill-in templates for first public product and launch information
+- `src/pages/`: static routes for home, products, applications, technologies, resources and quotation requests
+- `src/data/`: structured site, application, technology and product data
+- `src/components/`: shared layout, cards, header/footer and quotation panels
+- `src/styles/global.css`: industrial visual system for the Band Saw Blade Supply catalog
+- `public/images/`: hero and application imagery
+- `DESIGN.md`: current visual direction
+- `DEPLOYMENT.md`: production build and launch checklist
 
-## WordPress installation
+## Commands
 
-1. Install WordPress 6.5+ and WooCommerce on PHP 8.1+.
-2. Copy this repository's `wp-content/themes/kechoo` and `wp-content/plugins/kechoo-core` directories into the WordPress installation.
-3. Activate **KECHOO Core**, then activate the **KECHOO** theme.
-4. Configure WooCommerce for USD, PayPal, stock management, China as the store origin, and the required shipping zones/rates.
-5. Assign the primary and footer menus, set a static front page, and add verified hot-selling product data.
+```bash
+npm install
+npm run dev
+npm run build
+npm run preview
+```
 
-The KECHOO Core activation routine creates the Find Your Blade, Request a Quote, and Distributors pages when those slugs do not already exist.
+Local development defaults to:
 
-## Local WordPress test site
+```text
+http://127.0.0.1:4321/
+```
 
-1. Run `npm install` once.
-2. Run `npm run wp:start`.
-3. Open `http://127.0.0.1:9400/`. WordPress admin is available at `/wp-admin/` with username `kechoo-admin` and password `kechoo-test`. This test administrator uses Simplified Chinese; the public site remains English.
+## Content model
 
-The first start installs WooCommerce, activates the KECHOO theme and core plugin, creates the RFQ/selector pages, and imports nine clearly marked test products from `test-site/hot-selling-products.json`. USD, China store origin, guest checkout, and test flat-rate zones for North America, Europe, and Southeast Asia are configured. A local-only “Test checkout — no payment collected” gateway keeps checkout testable before PayPal Sandbox credentials are connected.
+Products live in `src/data/products.ts`. Public product pages do not expose price, stock, cart or checkout. Each product should include:
 
-Useful test paths:
+- SKU
+- application
+- blade technology
+- length, width, thickness and tooth pitch
+- tooth form
+- backing and tooth material
+- machine type and cutting range
+- pack quantity and custom-size policy
+- selection rationale
 
-- `/shop/`: WooCommerce catalog with the KECHOO blade filter panel and compact specification summaries on product cards.
-- `/find-your-blade/`: guided selector page.
-- `/request-a-quote/`: RFQ form for custom sizes, complex applications, and distributors.
-- `/wp-admin/edit.php?post_type=product&page=kechoo-product-guide`: Chinese KECHOO product-upload guide for operators.
-- `/returns-refunds/`: draft returns and refunds policy.
-- `/customs-duties/`: draft customs and duties policy.
+## SEO priorities
 
-Run `npm run wp:reset` when you need a clean test database. Resetting deletes the locally persisted Playground site and imports the test catalog again. Test prices, stock, shipping, compatibility, dispatch times, product text, and generated imagery must never be treated as production data.
+The site generates static HTML pages for:
 
-PayPal should be added back when Sandbox or merchant credentials are ready. Until then the local checkout uses the no-payment test gateway to keep ordering flows simple and deterministic.
+- `/products/`
+- `/products/{product-slug}/`
+- `/applications/food-bone/`
+- `/applications/wood/`
+- `/applications/metal/`
+- `/technologies/hardened/`
+- `/technologies/bi-metal/`
+- `/technologies/carbide/`
+- `/resources/{guide-slug}/`
 
-For deployment planning, see `DEPLOYMENT.md`. The current recommended milestone is `v0.1-deploy-prep`.
+Each page has title, description, canonical URL, Open Graph metadata and relevant JSON-LD. The sitemap is generated at build time by `@astrojs/sitemap`.
 
-## Public-lite launch mode
+## Quotation workflow
 
-The current site is configured as an RFQ-first public catalog. Products can be browsed, filtered, and used to start quote requests, but the frontend does not expose test prices, Add to cart buttons, or checkout as the primary buyer path.
+Quotation forms are static and open a prepared email to `info@bandsawbladesupply.com`. Add an official WhatsApp contact only after the production number is confirmed.
 
-Use `data-templates/products-public-lite.csv` to prepare the first real product batch. Price, stock, PayPal, and exact shipping rules can wait until the ecommerce phase.
+The current business assumption: inquiry quality matters more than instant checkout. Prices, MOQ, lead time, compatibility and shipment details are confirmed by quotation.

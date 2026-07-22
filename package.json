@@ -1,11 +1,14 @@
 {
-  "name": "kechoo-wordpress-site",
+  "name": "bandsaw-blade-supply-site",
   "private": true,
+  "type": "module",
   "scripts": {
-    "wp:start": "wp-playground-cli start --path=./wp-content --blueprint=./test-site/blueprint.json --mount=./test-site:/wordpress/kechoo-test-site --wp=latest --php=8.3 --port=9400 --skip-browser",
-    "wp:reset": "npm run wp:start -- --reset"
+    "dev": "astro dev --host 127.0.0.1 --port 4321",
+    "build": "astro build",
+    "preview": "astro preview --host 127.0.0.1 --port 4321"
   },
-  "devDependencies": {
-    "@wp-playground/cli": "^3.1.40"
+  "dependencies": {
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^7.1.3"
   }
 }

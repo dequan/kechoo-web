@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RfqPanel from '../components/RfqPanel.astro';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="Contact Band Saw Blade Supply"
+  description="Contact Band Saw Blade Supply for bandsaw blade quotation, distributor discussion and technical product selection."
+>
+  <main id="main-content">
+    <header class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / Contact</nav>
+      <p class="kicker kicker--red">Sales contact</p>
+      <h1>Contact Band Saw Blade Supply</h1>
+      <p>Email: <a href={`mailto:${site.email}`}>{site.email}</a>. Share your WhatsApp number in the inquiry if you prefer a direct follow-up.</p>
+    </header>
+    <RfqPanel />
+  </main>
+</BaseLayout>

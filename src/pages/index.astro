@@ -1,0 +1,178 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import RfqPanel from '../components/RfqPanel.astro';
+import { applications, resources, site, technologies } from '../data/site';
+import { products } from '../data/products';
+
+const featuredProducts = products.slice(0, 6);
+const procurementSignals = [
+  { label: 'Size fit', value: 'length, width, thickness, TPI' },
+  { label: 'Cutting job', value: 'material, shape, section size' },
+  { label: 'Commercial data', value: 'MOQ, packing, lead time, destination' }
+];
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.name,
+    url: Astro.site?.toString() || site.url,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: new URL('/products/?q={search_term_string}', Astro.site || site.url).toString(),
+      'query-input': 'required name=search_term_string'
+    }
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Band Saw Blade Supply applications',
+    itemListElement: applications.map((application, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: application.title,
+      url: new URL(`/applications/${application.slug}/`, Astro.site || site.url).toString()
+    }))
+  }
+];
+---
+
+<BaseLayout
+  title="Bandsaw blade supplier for B2B quotation"
+  description="Band Saw Blade Supply helps buyers compare hardened, bi-metal and carbide bandsaw blades for food and bone, wood and metal cutting. View specifications and request a quotation."
+  structuredData={structuredData}
+>
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero__copy">
+        <p class="hero-label">Bandsaw blade specification catalog</p>
+        <h1 id="hero-title">Band saw blades specified for the job.</h1>
+        <p class="hero__lead">Hardened, bi-metal and carbide bandsaw blades organized for buyers who need fit, lead time and quotation clarity before placing an order.</p>
+        <div class="filter-row">
+          <a class="button button--light" href="/products/">View blade range</a>
+          <a class="button button--outline" href="/request-a-quote/">Request a quote</a>
+        </div>
+        <ul class="hero__proof" aria-label="Band Saw Blade Supply strengths">
+          <li>Application-led selection</li>
+          <li>Specification-based quotation</li>
+          <li>Global supply from China</li>
+        </ul>
+      </div>
+      <div class="hero__media">
+        <img src="/images/hero-bandsaw-blade.png" alt="Coiled bandsaw blade with close-up tooth detail" width="1586" height="992" fetchpriority="high" />
+      </div>
+    </section>
+
+    <section class="signal-strip" aria-label="What Band Saw Blade Supply confirms before quotation">
+      {procurementSignals.map((item) => (
+        <article>
+          <span>{item.label}</span>
+          <strong>{item.value}</strong>
+        </article>
+      ))}
+    </section>
+
+    <section class="section" aria-labelledby="applications-title">
+      <div class="section-heading section-heading--stacked">
+        <h2 id="applications-title">Start with what you cut</h2>
+        <p>Choose the cutting material and machine type first. Then match blade size, tooth pitch and blade technology to the job.</p>
+      </div>
+      <div class="application-grid">
+        {applications.map((application) => (
+          <article class="application-card">
+            <a class="application-card__image" href={`/applications/${application.slug}/`} tabindex="-1" aria-hidden="true">
+              <img src={application.image} alt={application.alt} width="1200" height="800" loading="lazy" />
+            </a>
+            <div class="application-card__content">
+              <p class="page-label">{application.eyebrow}</p>
+              <h3>{application.title}</h3>
+              <p>{application.description}</p>
+              <ul class="mini-list">
+                {application.materials.slice(0, 3).map((item) => <li>{item}</li>)}
+              </ul>
+              <a class="text-link" href={`/applications/${application.slug}/`}>Find matching blades <span aria-hidden="true">-></span></a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="selector-band" aria-labelledby="selector-title">
+      <div>
+        <p class="hero-label">Quotation checklist</p>
+        <h2 id="selector-title">A better quote starts with complete cutting details.</h2>
+        <p>Application, machine, blade dimensions, quantity and destination help confirm the right specification before price is discussed.</p>
+      </div>
+      <div class="selector-steps">
+        <article><span>01</span><h3>Choose application</h3><p>Food and bone, wood or metal determines the first blade family.</p></article>
+        <article><span>02</span><h3>Confirm dimensions</h3><p>Length, width, thickness and TPI prevent wrong-fit quotations.</p></article>
+        <article><span>03</span><h3>Confirm supply details</h3><p>MOQ, lead time, packing and shipping are confirmed before purchase.</p></article>
+      </div>
+    </section>
+
+    <section class="section section--gray" aria-labelledby="technology-title">
+      <div class="section__inner">
+        <div class="section-heading section-heading--stacked">
+          <h2 id="technology-title">Match the blade to the work</h2>
+          <p>Compare hardened, bi-metal and carbide blades by cutting material, tooth edge, machine condition and expected production volume.</p>
+        </div>
+        <div class="technology-rail">
+          {technologies.map((technology, index) => (
+            <article class="technology-card">
+              <span class="index-mark">{String(index + 1).padStart(2, '0')}</span>
+              <h3>{technology.title}</h3>
+              <p>{technology.description}</p>
+              <p><strong>Best for:</strong> {technology.bestFor}</p>
+              <a class="text-link" href={`/technologies/${technology.slug}/`}>Explore {technology.title.toLowerCase()} blades <span aria-hidden="true">-></span></a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="products-title">
+      <div class="section-heading section-heading--stacked">
+        <h2 id="products-title">Hot-selling specifications</h2>
+        <p>Common replacement sizes are listed with metric and inch references so buyers can confirm fit before requesting a quotation.</p>
+        <a class="text-link" href="/products/">View all blade specifications <span aria-hidden="true">-></span></a>
+      </div>
+      <div class="product-grid">
+        {featuredProducts.map((product) => <ProductCard product={product} />)}
+      </div>
+    </section>
+
+    <section class="section section--dark" aria-labelledby="proof-title">
+      <div class="section__inner proof-system">
+        <div>
+          <p class="hero-label">Process earns trust</p>
+          <h2 id="proof-title">A better quote starts before the blade reaches the machine.</h2>
+        </div>
+        <ol>
+          <li><strong>Material control</strong><span>Specify backing and tooth material for the cutting job, not only for a catalog label.</span></li>
+          <li><strong>Tooth consistency</strong><span>Control tooth form, set and heat treatment for repeatable chip formation.</span></li>
+          <li><strong>Weld inspection</strong><span>Check blade length, alignment, finish and weld quality before packing.</span></li>
+          <li><strong>Quote discipline</strong><span>Confirm MOQ, pack quantity, destination and lead time before purchase.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="resources-title">
+      <div class="section-heading section-heading--stacked">
+        <h2 id="resources-title">Guides that answer buyer questions</h2>
+        <p>Use these guides to measure blade size, choose TPI, compare blade technologies and prepare the details needed for quotation.</p>
+        <a class="text-link" href="/resources/">Open resources <span aria-hidden="true">-></span></a>
+      </div>
+      <div class="resource-grid">
+        {resources.map((resource) => (
+          <article class="resource-card">
+            <p class="resource-card__meta">{resource.category}</p>
+            <h3><a href={`/resources/${resource.slug}/`}>{resource.title}</a></h3>
+            <p>{resource.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <RfqPanel />
+  </main>
+</BaseLayout>

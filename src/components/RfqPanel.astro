@@ -1,0 +1,37 @@
+---
+interface Props {
+  title?: string;
+  body?: string;
+  sku?: string;
+}
+
+const {
+  title = 'Send blade dimensions. Get a practical quotation.',
+  body = 'Share the machine size, cutting material, quantity and destination country. We will confirm blade fit, MOQ, lead time and quotation details.',
+  sku = ''
+} = Astro.props;
+---
+
+<section class="rfq-panel" aria-labelledby="rfq-panel-title">
+  <div>
+    <p class="kicker">Quotation support</p>
+    <h2 id="rfq-panel-title">{title}</h2>
+    <p>{body}</p>
+  </div>
+  <form class="rfq-mini" data-rfq-form>
+    <label>
+      Product or SKU
+      <input name="sku" value={sku} placeholder="Example: KB-M42-4115-34-110-3-4" />
+    </label>
+    <label>
+      Email or WhatsApp number
+      <input name="contact" required placeholder="Your contact" />
+    </label>
+    <label>
+      Requirement
+      <textarea name="message" required rows="4" placeholder="Blade size, material to cut, quantity, destination country"></textarea>
+    </label>
+    <button class="button button--light" type="submit">Prepare inquiry</button>
+    <p class="form-note" data-rfq-output>We will open a prepared email message on your device.</p>
+  </form>
+</section>

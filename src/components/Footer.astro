@@ -1,0 +1,48 @@
+---
+import { applications, navigation, site, technologies } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="site-footer__grid">
+    <div>
+      <a class="brand brand--footer" href="/" aria-label={`${site.name} home`}>
+        <span class="brand__name">Band Saw Blade</span>
+        <span class="brand__sub">Supply</span>
+        <span class="brand__cut" aria-hidden="true"></span>
+      </a>
+      <p class="footer-lead">{site.tagline}</p>
+      <p>Bandsaw blade supply for overseas buyers, distributors and production teams.</p>
+      <div class="footer-contact">
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        <a href="/request-a-quote/">Send quotation details</a>
+      </div>
+    </div>
+    <div>
+      <h2>Products</h2>
+      <ul>
+        {technologies.map((item) => <li><a href={`/technologies/${item.slug}/`}>{item.title} blades</a></li>)}
+        <li><a href="/products/">All blade specifications</a></li>
+      </ul>
+    </div>
+    <div>
+      <h2>Applications</h2>
+      <ul>
+        {applications.map((item) => <li><a href={`/applications/${item.slug}/`}>{item.title}</a></li>)}
+      </ul>
+    </div>
+    <div>
+      <h2>Company</h2>
+      <ul>
+        {navigation.slice(3).map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        <li><a href="/contact/">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="site-footer__legal">
+    <p>Copyright {new Date().getFullYear()} {site.name}. Product compatibility and lead time are confirmed by quotation.</p>
+    <div>
+      <a href="/privacy/">Privacy</a>
+      <a href="/terms/">Terms</a>
+    </div>
+  </div>
+</footer>

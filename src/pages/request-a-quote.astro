@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { applications, site, technologies } from '../data/site';
+
+const sku = Astro.url.searchParams.get('sku') || '';
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Request a Band Saw Blade Supply quotation',
+  description: 'Send bandsaw blade dimensions, cutting application, quantity and contact details to request a quotation.'
+};
+---
+
+<BaseLayout
+  title="Request a bandsaw blade quotation"
+  description="Send Band Saw Blade Supply your blade size, application, material, quantity and destination country for B2B price, MOQ and lead time."
+  structuredData={structuredData}
+>
+  <main id="main-content">
+    <header class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / Request a quote</nav>
+      <p class="kicker kicker--red">Quotation request</p>
+      <h1>Request a bandsaw blade quotation</h1>
+      <p>Share the details that affect fit and price. The more complete the inquiry, the faster we can confirm specification, MOQ, lead time and packing.</p>
+    </header>
+
+    <section class="section detail-grid">
+      <form class="rfq-form" data-rfq-form>
+        <label>
+          Product or SKU
+          <input name="sku" value={sku} placeholder="Example: KB-M42-4115-34-110-3-4" />
+        </label>
+        <label>
+          Application
+          <select name="application">
+            <option value="">Select application</option>
+            {applications.map((item) => <option value={item.title}>{item.title}</option>)}
+          </select>
+        </label>
+        <label>
+          Blade technology
+          <select name="technology">
+            <option value="">Not sure</option>
+            {technologies.map((item) => <option value={item.title}>{item.title}</option>)}
+          </select>
+        </label>
+        <label>
+          Blade size
+          <input name="size" placeholder="Length x width x thickness, mm or inch" />
+        </label>
+        <label>
+          Quantity
+          <input name="quantity" placeholder="Example: 50 pcs, 100 welded loops" />
+        </label>
+        <label>
+          Destination country
+          <input name="country" placeholder="Example: United States" />
+        </label>
+        <label class="wide">
+          Email or WhatsApp number
+          <input name="contact" required placeholder="Your contact" />
+        </label>
+        <label class="wide">
+          Cutting requirement
+          <textarea name="message" required rows="6" placeholder="Machine model, material to cut, workpiece size, TPI if known, package or distributor requirement"></textarea>
+        </label>
+        <button class="button" type="submit">Prepare inquiry</button>
+        <p class="form-note wide" data-rfq-output>Submitting opens a prepared email on your device. You can also contact {site.email} directly.</p>
+      </form>
+
+      <aside class="detail-panel">
+        <p class="kicker kicker--red">What to include</p>
+        <h2>Useful requests are specific.</h2>
+        <ul>
+          <li>Blade length, width, thickness and TPI</li>
+          <li>Machine brand or model if available</li>
+          <li>Material being cut and section size</li>
+          <li>Quantity, destination country and buyer type</li>
+          <li>Photos of old blade, machine label or packaging</li>
+        </ul>
+      </aside>
+    </section>
+  </main>
+</BaseLayout>

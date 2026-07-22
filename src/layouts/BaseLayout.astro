@@ -1,0 +1,78 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import { site } from '../data/site';
+
+type JsonLd = Record<string, unknown> | Record<string, unknown>[];
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  canonical?: string;
+  structuredData?: JsonLd;
+}
+
+const {
+  title,
+  description,
+  image = site.defaultImage,
+  canonical = Astro.url.pathname,
+  structuredData
+} = Astro.props;
+
+const pageTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
+const canonicalUrl = new URL(canonical, Astro.site || site.url).toString();
+const imageUrl = new URL(image, Astro.site || site.url).toString();
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: site.name,
+  url: Astro.site?.toString() || site.url,
+  logo: new URL('/favicon.svg', Astro.site || site.url).toString(),
+  email: site.email,
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'sales',
+      email: site.email,
+      availableLanguage: ['en', 'zh']
+    }
+  ]
+};
+
+const schema = structuredData
+  ? Array.isArray(structuredData)
+    ? [organizationSchema, ...structuredData]
+    : [organizationSchema, structuredData]
+  : [organizationSchema];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#b51d24" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <Header />
+    <slot />
+    <Footer />
+    <script src="/site.js" defer></script>
+  </body>
+</html>

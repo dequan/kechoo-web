@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { technologies } from '../../data/site';
+---
+
+<BaseLayout
+  title="Bandsaw blade technologies"
+  description="Compare hardened, bi-metal and carbide bandsaw blade technologies for quotation and selection."
+>
+  <main id="main-content">
+    <header class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / Technology</nav>
+      <p class="page-label">Blade technology</p>
+      <h1>Bandsaw blade technologies</h1>
+      <p>Compare blade families by tooth edge, backing material, machine condition and cutting demand.</p>
+    </header>
+    <section class="section">
+      <div class="technology-grid">
+        {technologies.map((technology) => (
+          <article class="technology-card">
+            <h3>{technology.title}</h3>
+            <p>{technology.description}</p>
+            <p><strong>Best for:</strong> {technology.bestFor}</p>
+            <ul class="dense-list">
+              {technology.buyingNotes.slice(0, 2).map((note) => <li>{note}</li>)}
+            </ul>
+            <a class="text-link" href={`/technologies/${technology.slug}/`}>Open technology <span aria-hidden="true">-></span></a>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>

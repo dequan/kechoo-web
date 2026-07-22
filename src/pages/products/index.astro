@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import RfqPanel from '../../components/RfqPanel.astro';
+import { applications, technologies } from '../../data/site';
+import { products } from '../../data/products';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Bandsaw blade specifications',
+  description: 'Hardened, bi-metal and carbide bandsaw blade specifications for quotation.'
+};
+---
+
+<BaseLayout
+  title="Bandsaw blade specifications for quotation"
+  description="Browse bandsaw blade specifications by application, technology, size and tooth pitch. Send the SKU for price, MOQ and lead time."
+  structuredData={structuredData}
+>
+  <main id="main-content">
+    <header class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / Products</nav>
+      <p class="kicker kicker--red">Blade specifications</p>
+      <h1>Bandsaw blade specifications</h1>
+      <p>Compare blade size, tooth pitch, cutting range and material before asking for price, MOQ, lead time and shipping details.</p>
+    </header>
+    <section class="section">
+      <div class="filter-row" aria-label="Browse filters">
+        {applications.map((item) => <a href={`/applications/${item.slug}/`}>{item.title}</a>)}
+        {technologies.map((item) => <a href={`/technologies/${item.slug}/`}>{item.title}</a>)}
+      </div>
+      <div class="product-grid">
+        {products.map((product) => <ProductCard product={product} />)}
+      </div>
+    </section>
+    <RfqPanel />
+  </main>
+</BaseLayout>

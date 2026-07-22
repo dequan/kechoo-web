@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RfqPanel from '../../components/RfqPanel.astro';
+import { resources, site } from '../../data/site';
+
+export function getStaticPaths() {
+  return resources.map((resource) => ({
+    params: { slug: resource.slug },
+    props: { resource }
+  }));
+}
+
+const { resource } = Astro.props;
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: resource.title,
+  description: resource.description,
+  datePublished: resource.date,
+  author: { '@type': 'Organization', name: site.name }
+};
+---
+
+<BaseLayout title={resource.title} description={resource.description} structuredData={articleSchema}>
+  <main id="main-content">
+    <article class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / <a href="/resources/">Resources</a> / {resource.category}</nav>
+      <p class="page-label">{resource.category}</p>
+      <h1>{resource.title}</h1>
+      <p>{resource.description}</p>
+    </article>
+    <section class="section guide-layout">
+      <article class="guide-body">
+        <p class="guide-intro">{resource.intro}</p>
+        {resource.sections.map((section) => (
+          <section>
+            <h2>{section.heading}</h2>
+            <p>{section.body}</p>
+          </section>
+        ))}
+      </article>
+      <aside class="guide-aside">
+        <h2>Quotation checklist</h2>
+        <ul class="dense-list">
+          {resource.checklist.map((item) => <li>{item}</li>)}
+        </ul>
+        <h2>Common buyer wording</h2>
+        <ul class="query-list">
+          {resource.relatedQueries.map((item) => <li>{item}</li>)}
+        </ul>
+      </aside>
+    </section>
+    <RfqPanel title="Request a quotation with these details" />
+  </main>
+</BaseLayout>

@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import RfqPanel from '../../components/RfqPanel.astro';
+import { technologies } from '../../data/site';
+import { getProductsByTechnology } from '../../data/products';
+
+export function getStaticPaths() {
+  return technologies.map((technology) => ({
+    params: { slug: technology.slug },
+    props: { technology }
+  }));
+}
+
+const { technology } = Astro.props;
+const matchingProducts = getProductsByTechnology(technology.slug);
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `${technology.title} bandsaw blades`,
+  description: technology.description
+};
+---
+
+<BaseLayout
+  title={`${technology.title} bandsaw blades`}
+  description={`${technology.description} Browse specifications and request price, MOQ and lead time.`}
+  structuredData={structuredData}
+>
+  <main id="main-content">
+    <header class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / Technology / {technology.title}</nav>
+      <p class="page-label">Blade technology</p>
+      <h1>{technology.title} bandsaw blades</h1>
+      <p>{technology.description}</p>
+    </header>
+
+    <section class="section section--gray">
+      <div class="section__inner detail-grid">
+        <div>
+          <h2>{technology.bestFor}</h2>
+        </div>
+        <div class="detail-panel">
+          <h2>Buying notes</h2>
+          <ul class="dense-list">
+            {technology.buyingNotes.map((note) => <li>{note}</li>)}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="matching-products">
+      <div class="section-heading">
+        <h2 id="matching-products">Matching specifications</h2>
+        <p>Send the SKU and your cutting requirement to confirm price, MOQ and delivery.</p>
+      </div>
+      <div class="product-grid">
+        {matchingProducts.map((product) => <ProductCard product={product} />)}
+      </div>
+    </section>
+
+    <section class="section section--gray" aria-labelledby="technology-search-title">
+      <div class="section__inner">
+        <div class="section-heading">
+          <h2 id="technology-search-title">Common industry terms</h2>
+          <p>{technology.keywords.join(', ')}</p>
+        </div>
+      </div>
+    </section>
+
+    <RfqPanel title={`Request ${technology.title.toLowerCase()} blade quotation`} />
+  </main>
+</BaseLayout>

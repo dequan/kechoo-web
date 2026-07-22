@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { applications } from '../../data/site';
+---
+
+<BaseLayout
+  title="Bandsaw blade applications"
+  description="Browse bandsaw blades by cutting application: food and bone, wood and metal."
+>
+  <main id="main-content">
+    <header class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / Applications</nav>
+      <p class="kicker kicker--red">Cutting applications</p>
+      <h1>Bandsaw blade applications</h1>
+      <p>Choose the cutting job first, then narrow by blade technology and specification.</p>
+    </header>
+    <section class="section">
+      <div class="application-grid">
+        {applications.map((application) => (
+          <article class="application-card">
+            <a class="application-card__image" href={`/applications/${application.slug}/`}>
+              <img src={application.image} alt={application.alt} width="1200" height="800" loading="lazy" />
+            </a>
+            <div class="application-card__content">
+              <p class="kicker kicker--red">{application.eyebrow}</p>
+              <h3>{application.title}</h3>
+              <p>{application.description}</p>
+              <a class="text-link" href={`/applications/${application.slug}/`}>Open application <span aria-hidden="true">-></span></a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+</BaseLayout>

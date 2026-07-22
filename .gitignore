@@ -1,7 +1,6 @@
 node_modules/
-.wordpress-playground/
 npm-debug.log*
-wp-content/plugins/woocommerce/
-wp-content/plugins/woocommerce-paypal-payments/
-test-site/playground.stdout.log
-test-site/playground.stderr.log
+dist/
+.astro/
+.env
+.env.local

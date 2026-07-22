@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import RfqPanel from '../../components/RfqPanel.astro';
+import { applications } from '../../data/site';
+import { getProductsByApplication } from '../../data/products';
+
+export function getStaticPaths() {
+  return applications.map((application) => ({
+    params: { slug: application.slug },
+    props: { application }
+  }));
+}
+
+const { application } = Astro.props;
+const matchingProducts = getProductsByApplication(application.slug);
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: application.faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer
+    }
+  }))
+};
+---
+
+<BaseLayout
+  title={`${application.title} bandsaw blades`}
+  description={`${application.description} Request a quotation with blade dimensions, quantity and destination country.`}
+  image={application.image}
+  structuredData={faqSchema}
+>
+  <main id="main-content">
+    <header class="page-hero">
+      <nav class="breadcrumbs"><a href="/">Home</a> / Applications / {application.title}</nav>
+      <p class="page-label">{application.eyebrow}</p>
+      <h1>{application.title} bandsaw blades</h1>
+      <p>{application.description}</p>
+    </header>
+
+    <section class="section application-story">
+      <div class="application-story__media">
+        <img src={application.image} alt={application.alt} width="1200" height="800" loading="eager" />
+      </div>
+      <div class="application-story__copy">
+        <h2>The buying scene</h2>
+        <p>{application.scene}</p>
+        <p>{application.buyerIntent}</p>
+      </div>
+    </section>
+
+    <section class="section section--gray" aria-labelledby="application-intent">
+      <div class="section__inner split-panels">
+        <article>
+          <h2 id="application-intent">Materials and workpieces</h2>
+          <ul class="tag-list">
+            {application.materials.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+        <article>
+          <h2>Common problems to avoid</h2>
+          <ul class="dense-list">
+            {application.problems.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="matching-products">
+      <div class="section-heading">
+        <h2 id="matching-products">Matching blade specifications</h2>
+        <p>These specifications are starting points. Final fit, MOQ and delivery are confirmed by quotation.</p>
+      </div>
+      <div class="product-grid">
+        {matchingProducts.map((product) => <ProductCard product={product} />)}
+      </div>
+    </section>
+
+    <section class="section section--gray" aria-labelledby="quote-data-title">
+      <div class="section__inner split-panels">
+        <article>
+          <h2 id="quote-data-title">Details to send for quotation</h2>
+          <ul class="dense-list">
+            {application.quoteDetails.map((item) => <li>{item}</li>)}
+          </ul>
+        </article>
+        <article>
+          <h2>Common buyer terms</h2>
+          <ul class="query-list">
+            {application.keywords.map((keyword) => <li>{keyword}</li>)}
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="application-faq">
+      <div class="section-heading">
+        <h2 id="application-faq">Buyer questions</h2>
+        <p>Use these answers to prepare blade size, cutting material and quantity before asking for price.</p>
+      </div>
+      <div class="faq-list">
+        {application.faqs.map((item) => (
+          <article>
+            <h3>{item.question}</h3>
+            <p>{item.answer}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <RfqPanel title={`Request ${application.title.toLowerCase()} blade quotation`} />
+  </main>
+</BaseLayout>
