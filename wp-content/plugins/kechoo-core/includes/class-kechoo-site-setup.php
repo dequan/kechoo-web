@@ -62,7 +62,7 @@ final class Kechoo_Site_Setup {
 			),
 			'about' => array(
 				'title'   => 'About KECHOO',
-				'content' => '<h2>Choose Better Cutting</h2><p>KECHOO focuses on industrial bandsaw blades for food processing, woodworking, and metal cutting. We combine controlled manufacturing processes with practical selection support for factories and distributors worldwide.</p><p>工艺出奇，品质出众。</p><p><a href="/contact/">Contact KECHOO</a></p>',
+				'content' => '<h2>Choose Better Cutting</h2><p>KECHOO focuses on industrial bandsaw blades for food processing, woodworking, and metal cutting. We combine controlled manufacturing processes with practical selection support for factories and distributors worldwide.</p><p>Precision-made blades, reliable cutting performance.</p><p><a href="/contact/">Contact KECHOO</a></p>',
 			),
 			'shipping' => array(
 				'title'   => 'Shipping from China',
