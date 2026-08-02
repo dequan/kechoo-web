@@ -224,6 +224,24 @@ These are practical B2B ecommerce drafts and should be reviewed before productio
 
 Use this runbook when deploying the public-lite version to a VPS with aaPanel installed.
 
+For the exact repeatable GitHub-to-VPS deployment flow, deploy-key setup, routine updates, rollback, and new-server migration checklist, see:
+
+```text
+docs/github-vps-deployment-runbook.md
+```
+
+The standard deployment model is:
+
+```text
+Local commit and push
+→ GitHub private repository
+→ VPS pulls with a read-only deploy key
+→ rsync only wp-content/themes/kechoo and wp-content/plugins/kechoo-core
+→ WordPress database keeps pages, products, RFQs, settings, uploads, and live state
+```
+
+Do not use local direct file upload as the normal deployment path.
+
 ### 1. aaPanel environment
 
 Install or confirm these aaPanel App Store components:
@@ -352,19 +370,27 @@ The public-lite version does not need PayPal or online checkout to launch.
 SSH into the VPS:
 
 ```bash
-cd /tmp
-git clone https://github.com/dequan/kechoo-web.git
-cd kechoo-web
-git checkout v0.2-public-lite
+REPO_DIR=/opt/kechoo/deploy/kechoo-web
+BRANCH=codex/wordpress-deploy-prep
+SITE_ROOT=/www/wwwroot/kechoo.com
+export GIT_SSH_COMMAND='ssh -i /root/.ssh/kechoo_github_deploy -o StrictHostKeyChecking=accept-new'
+
+mkdir -p "$(dirname "$REPO_DIR")"
+git clone --branch "$BRANCH" --single-branch git@github.com:dequan/kechoo-web.git "$REPO_DIR"
 ```
 
 Copy only the KECHOO theme and KECHOO plugin:
 
 ```bash
-rsync -av --delete wp-content/themes/kechoo/ /www/wwwroot/kechoo.com/wp-content/themes/kechoo/
-rsync -av --delete wp-content/plugins/kechoo-core/ /www/wwwroot/kechoo.com/wp-content/plugins/kechoo-core/
-chown -R www:www /www/wwwroot/kechoo.com/wp-content/themes/kechoo
-chown -R www:www /www/wwwroot/kechoo.com/wp-content/plugins/kechoo-core
+find "$REPO_DIR/wp-content/themes/kechoo" \
+     "$REPO_DIR/wp-content/plugins/kechoo-core" \
+     -name "*.php" -print0 |
+xargs -0 -n1 php -l
+
+rsync -az --delete "$REPO_DIR/wp-content/themes/kechoo/" "$SITE_ROOT/wp-content/themes/kechoo/"
+rsync -az --delete "$REPO_DIR/wp-content/plugins/kechoo-core/" "$SITE_ROOT/wp-content/plugins/kechoo-core/"
+chown -R www:www "$SITE_ROOT/wp-content/themes/kechoo"
+chown -R www:www "$SITE_ROOT/wp-content/plugins/kechoo-core"
 ```
 
 Do not copy these development-only paths into the production web root:

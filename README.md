@@ -8,6 +8,7 @@ Custom WordPress and WooCommerce implementation for **KECHOO — Choose Better C
 - `wp-content/plugins/kechoo-core`: product taxonomy, technical product fields, blade selector, and RFQ workflow
 - `PRODUCT.md`, `DESIGN.md`, `SITE-BRIEF.md`: approved product and design direction
 - `DEPLOYMENT.md`: deployment, Cloudflare, email, SMTP, backup, analytics, PayPal, shipping, and launch decisions
+- `docs/github-vps-deployment-runbook.md`: repeatable GitHub-to-aaPanel VPS deployment and migration runbook
 - `data-templates/`: CSV and fill-in templates for first public product and launch information
 
 ## WordPress installation
@@ -41,7 +42,7 @@ Run `npm run wp:reset` when you need a clean test database. Resetting deletes th
 
 PayPal should be added back when Sandbox or merchant credentials are ready. Until then the local checkout uses the no-payment test gateway to keep ordering flows simple and deterministic.
 
-For deployment planning, see `DEPLOYMENT.md`. The current recommended milestone is `v0.1-deploy-prep`.
+For deployment planning, see `DEPLOYMENT.md`. For the exact GitHub-to-VPS deployment and migration flow, see `docs/github-vps-deployment-runbook.md`. The current recommended milestone is `v0.1-deploy-prep`.
 
 ## Public-lite launch mode
 
