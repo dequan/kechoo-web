@@ -165,6 +165,75 @@ GIT_SSH_COMMAND='ssh -i /root/.ssh/kechoo_github_deploy -o StrictHostKeyChecking
 git ls-remote git@github.com:dequan/kechoo-web.git refs/heads/codex/wordpress-deploy-prep
 ```
 
+## Local SSH Key for VPS Login
+
+This is different from the GitHub deploy key above.
+
+```text
+GitHub deploy key:
+  VPS -> GitHub private repository
+  Used only to pull code from GitHub.
+
+Local login key:
+  Your Windows machine -> VPS
+  Used to log in without typing the root password.
+```
+
+If the Windows machine already has an SSH key:
+
+```text
+C:\Users\jojo\.ssh\id_ed25519
+C:\Users\jojo\.ssh\id_ed25519.pub
+```
+
+show the public key in PowerShell:
+
+```powershell
+Get-Content $env:USERPROFILE\.ssh\id_ed25519.pub
+```
+
+Copy the full single-line public key. It should start with:
+
+```text
+ssh-ed25519
+```
+
+Add it to the VPS root account:
+
+```bash
+mkdir -p /root/.ssh
+chmod 700 /root/.ssh
+echo 'paste-the-full-public-key-here' >> /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
+```
+
+Then test from Windows:
+
+```powershell
+ssh root@149.104.22.140
+```
+
+If it logs in without asking for the root password, the key is working.
+
+For routine production deployment, prefer a limited `deploy` user instead of root:
+
+```bash
+adduser deploy
+mkdir -p /home/deploy/.ssh
+chmod 700 /home/deploy/.ssh
+echo 'paste-the-full-public-key-here' >> /home/deploy/.ssh/authorized_keys
+chmod 600 /home/deploy/.ssh/authorized_keys
+chown -R deploy:deploy /home/deploy/.ssh
+```
+
+Then test:
+
+```powershell
+ssh deploy@149.104.22.140
+```
+
+Do not copy or paste the private key file `id_ed25519` into the VPS, GitHub, chat, or project files. Only the `.pub` public key is shared.
+
 ## First Deploy or Rebuild
 
 Set variables:
