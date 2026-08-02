@@ -76,7 +76,7 @@ kechoo-wp/
 │   └── workflows/
 ├── wp-content/
 │   ├── themes/
-│   │   └── kechoo-child/
+│   │   └── kechoo/
 │   └── plugins/
 │       └── kechoo-core/
 ├── scripts/
@@ -101,11 +101,11 @@ kechoo-wp/
 推荐：
 
 ```text
-GeneratePress
-└── kechoo-child
+KECHOO custom theme
+└── kechoo
 ```
 
-`kechoo-child` 负责：
+`kechoo` 负责：
 
 - Header
 - Footer
@@ -120,7 +120,7 @@ GeneratePress
 主题目录示例：
 
 ```text
-wp-content/themes/kechoo-child/
+wp-content/themes/kechoo/
 ├── style.css
 ├── functions.php
 ├── theme.json
@@ -252,7 +252,7 @@ wp-config.php
 
 # Third-party themes
 /wp-content/themes/*
-!/wp-content/themes/kechoo-child/
+!/wp-content/themes/kechoo/
 
 # Dependencies
 node_modules/
@@ -351,7 +351,7 @@ AGENTS.md
 
 ## Project architecture
 
-- `wp-content/themes/kechoo-child` contains presentation code.
+- `wp-content/themes/kechoo` contains presentation code.
 - `wp-content/plugins/kechoo-core` contains business logic.
 - Never modify WordPress core.
 - Never modify WooCommerce core.
@@ -413,9 +413,9 @@ AGENTS.md
 请为 WooCommerce 单个商品页增加产品规格模块。
 
 要求：
-1. 只允许修改 kechoo-child 和 kechoo-core。
+1. 只允许修改 kechoo 和 kechoo-core。
 2. 数据字段逻辑放在 kechoo-core。
-3. 展示模板放在 kechoo-child。
+3. 展示模板放在 kechoo。
 4. 优先使用 WooCommerce hooks。
 5. 不修改 WooCommerce 核心文件。
 6. 所有输出必须 escaping。
@@ -474,7 +474,7 @@ Git clone
     "./wp-content/plugins/kechoo-core"
   ],
   "themes": [
-    "./wp-content/themes/kechoo-child"
+    "./wp-content/themes/kechoo"
   ],
   "port": 8888,
   "config": {
@@ -559,7 +559,7 @@ adduser deploy
 仅授予写入以下目录的权限：
 
 ```text
-wp-content/themes/kechoo-child
+wp-content/themes/kechoo
 wp-content/plugins/kechoo-core
 ```
 
@@ -589,7 +589,7 @@ jobs:
 
       - name: Check PHP syntax
         run: |
-          find wp-content/themes/kechoo-child \
+          find wp-content/themes/kechoo \
                wp-content/plugins/kechoo-core \
                -name "*.php" -print0 |
           xargs -0 -n1 php -l
@@ -613,8 +613,8 @@ jobs:
       - name: Deploy theme
         run: |
           rsync -az --delete \
-            wp-content/themes/kechoo-child/ \
-            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/kechoo.com/wp-content/themes/kechoo-child/"
+            wp-content/themes/kechoo/ \
+            "${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/kechoo.com/wp-content/themes/kechoo/"
 
       - name: Deploy custom plugin
         run: |
@@ -1367,7 +1367,7 @@ git revert <commit>
 
 ```bash
 tar -czf /var/backups/kechoo-code-$(date +%F-%H%M).tar.gz \
-  wp-content/themes/kechoo-child \
+  wp-content/themes/kechoo \
   wp-content/plugins/kechoo-core
 ```
 
@@ -1399,7 +1399,7 @@ Agent 不允许：
 
 ```text
 GitHub 私有仓库
-├── kechoo-child
+├── kechoo
 ├── kechoo-core
 ├── AGENTS.md
 ├── SEO 模板
@@ -1418,7 +1418,7 @@ GitHub 私有仓库
 ├── WordPress Core
 ├── WooCommerce
 ├── GeneratePress
-├── kechoo-child
+├── kechoo
 ├── kechoo-core
 ├── uploads
 ├── MariaDB
@@ -1433,7 +1433,7 @@ GitHub 私有仓库
 2. 不让 Agent 修改 WooCommerce 核心。
 3. 不让 Agent 修改 GeneratePress 核心。
 4. 业务逻辑放 `kechoo-core`。
-5. 外观和模板放 `kechoo-child`。
+5. 外观和模板放 `kechoo`。
 6. 所有代码改动走分支和 Pull Request。
 7. GitHub 只管理代码，不管理数据库和 uploads。
 8. 生产数据库是唯一业务真源。

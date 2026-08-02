@@ -1,7 +1,56 @@
+# WordPress core and runtime files
+/wp-admin/
+/wp-includes/
+/wp-*.php
+/index.php
+/license.txt
+/readme.html
+/xmlrpc.php
+
+# Config and secrets
+wp-config.php
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# Runtime files and generated content
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade/
+/wp-content/backups/
+/wp-content/ai1wm-backups/
+/wp-content/debug.log
+*.log
+*.sql
+*.sql.gz
+*.zip
+*.tar
+*.tar.gz
+
+# Third-party plugins
+/wp-content/plugins/*
+!/wp-content/plugins/kechoo-core/
+
+# Third-party themes
+/wp-content/themes/*
+!/wp-content/themes/kechoo/
+
+# Local development
 node_modules/
 .wordpress-playground/
 npm-debug.log*
-wp-content/plugins/woocommerce/
-wp-content/plugins/woocommerce-paypal-payments/
 test-site/playground.stdout.log
 test-site/playground.stderr.log
+
+# IDE and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Build outputs
+dist/
