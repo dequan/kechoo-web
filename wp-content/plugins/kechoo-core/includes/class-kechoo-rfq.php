@@ -16,6 +16,7 @@ final class Kechoo_RFQ {
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_post_type' ) );
 		add_shortcode( 'kechoo_rfq_form', array( __CLASS__, 'render_shortcode' ) );
+		add_action( 'add_meta_boxes_kechoo_rfq', array( __CLASS__, 'add_admin_meta_boxes' ) );
 		add_filter( 'manage_kechoo_rfq_posts_columns', array( __CLASS__, 'admin_columns' ) );
 		add_action( 'manage_kechoo_rfq_posts_custom_column', array( __CLASS__, 'admin_column_content' ), 10, 2 );
 	}
@@ -350,6 +351,87 @@ final class Kechoo_RFQ {
 		if ( isset( $map[ $column ] ) ) {
 			echo esc_html( get_post_meta( $post_id, $map[ $column ], true ) );
 		}
+	}
+
+	public static function add_admin_meta_boxes() {
+		add_meta_box(
+			'kechoo-rfq-details',
+			__( 'RFQ details', 'kechoo-core' ),
+			array( __CLASS__, 'render_admin_details_meta_box' ),
+			'kechoo_rfq',
+			'normal',
+			'high'
+		);
+	}
+
+	public static function render_admin_details_meta_box( $post ) {
+		$fields = array(
+			'_kechoo_rfq_reference'    => __( 'Reference', 'kechoo-core' ),
+			'_kechoo_rfq_contact_name' => __( 'Name', 'kechoo-core' ),
+			'_kechoo_rfq_email'        => __( 'Email', 'kechoo-core' ),
+			'_kechoo_rfq_company'      => __( 'Company', 'kechoo-core' ),
+			'_kechoo_rfq_country'      => __( 'Country / region', 'kechoo-core' ),
+			'_kechoo_rfq_buyer_type'   => __( 'Buyer type', 'kechoo-core' ),
+			'_kechoo_rfq_product'      => __( 'Product or blade family', 'kechoo-core' ),
+			'_kechoo_rfq_application'  => __( 'Application', 'kechoo-core' ),
+			'_kechoo_rfq_material'     => __( 'Workpiece material', 'kechoo-core' ),
+			'_kechoo_rfq_machine'      => __( 'Machine brand and model', 'kechoo-core' ),
+			'_kechoo_rfq_dimensions'   => __( 'Blade dimensions', 'kechoo-core' ),
+			'_kechoo_rfq_quantity'     => __( 'Estimated quantity', 'kechoo-core' ),
+		);
+		?>
+		<table class="widefat striped" style="max-width: 960px;">
+			<tbody>
+				<?php foreach ( $fields as $meta_key => $label ) : ?>
+					<tr>
+						<th scope="row" style="width: 220px;"><?php echo esc_html( $label ); ?></th>
+						<td>
+							<?php
+							$value = get_post_meta( $post->ID, $meta_key, true );
+							if ( '_kechoo_rfq_email' === $meta_key && $value ) {
+								printf( '<a href="mailto:%1$s">%2$s</a>', esc_attr( $value ), esc_html( $value ) );
+							} else {
+								echo $value ? esc_html( $value ) : '&mdash;';
+							}
+							?>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Cutting goal and other details', 'kechoo-core' ); ?></th>
+					<td>
+						<?php
+						$message = get_post_meta( $post->ID, '_kechoo_rfq_message', true );
+						echo $message ? nl2br( esc_html( $message ) ) : '&mdash;';
+						?>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Attachment', 'kechoo-core' ); ?></th>
+					<td>
+						<?php
+						$attachment_id = (int) get_post_meta( $post->ID, '_kechoo_rfq_attachment_id', true );
+						if ( $attachment_id ) {
+							$url   = wp_get_attachment_url( $attachment_id );
+							$title = get_the_title( $attachment_id );
+							if ( $url ) {
+								printf(
+									'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+									esc_url( $url ),
+									esc_html( $title ?: __( 'View attachment', 'kechoo-core' ) )
+								);
+							} else {
+								esc_html_e( 'Attachment not found.', 'kechoo-core' );
+							}
+						} else {
+							echo '&mdash;';
+						}
+						?>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<?php
 	}
 }
 

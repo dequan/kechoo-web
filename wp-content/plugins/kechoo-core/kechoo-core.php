@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KECHOO Core
  * Description: Product taxonomy, blade selection, technical specifications, and RFQ workflow for KECHOO.
- * Version: 1.4.0
+ * Version: 1.4.1
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Author: KECHOO
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'KECHOO_CORE_VERSION', '1.4.0' );
+define( 'KECHOO_CORE_VERSION', '1.4.1' );
 define( 'KECHOO_CORE_PATH', plugin_dir_path( __FILE__ ) );
 
 function kechoo_is_public_lite_mode() {
