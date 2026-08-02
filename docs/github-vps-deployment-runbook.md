@@ -17,6 +17,46 @@ WordPress web root
   -> runs KECHOO theme, KECHOO Core, WooCommerce, uploads, and database content
 ```
 
+## Branch and Environment Policy
+
+Use different branches for staging and production:
+
+```text
+codex/*, feature/*, fix/*, or develop
+  -> staging.kechoo.com or another temporary staging host
+
+main or a stable release tag
+  -> kechoo.com production
+```
+
+Recommended long-term mapping:
+
+```text
+codex/wordpress-deploy-prep
+  -> staging.kechoo.com
+
+main
+  -> kechoo.com
+
+v0.2-public-lite or later release tags
+  -> production rollback points
+```
+
+Do not use `kechoo.com` as the routine staging target once `staging.kechoo.com` exists.
+
+Promotion flow:
+
+```text
+local work branch
+  -> GitHub pull request
+  -> deploy to staging.kechoo.com
+  -> manual validation
+  -> merge to main
+  -> deploy main or release tag to kechoo.com
+```
+
+Production should not automatically follow an experimental Codex branch. A branch may be deployed to production only when it has been intentionally promoted to `main` or tagged as a release.
+
 Only these repository paths are deployed into WordPress:
 
 ```text
@@ -338,6 +378,93 @@ Always report whether a change affected:
 - WooCommerce settings,
 - SEO URLs,
 - cache behavior.
+
+## Database Change Policy
+
+Never publish production database changes by overwriting production with staging.
+
+Production keeps live business state:
+
+```text
+RFQs
+orders
+customers
+users
+inventory
+menus
+uploads
+SEO state
+plugin settings
+scheduled tasks
+```
+
+Staging can be rebuilt, reset, or refreshed from a sanitized production export. Production cannot be replaced with staging.
+
+Classify database changes before release:
+
+```text
+Schema or system state
+  -> versioned migration in kechoo-core
+
+Page copy, SEO drafts, products, categories, menus, media
+  -> content publishing workflow
+
+RFQs, orders, customers, users, inventory
+  -> production-owned data; never overwrite from staging
+```
+
+### Versioned Migrations
+
+When code requires a database structure or system-option change, implement it in `kechoo-core` as a versioned, repeatable migration.
+
+Example direction:
+
+```php
+define( 'KECHOO_CORE_DB_VERSION', '1.5.0' );
+
+$current_version = get_option( 'kechoo_core_db_version', '0.0.0' );
+
+if ( version_compare( $current_version, '1.5.0', '<' ) ) {
+    kechoo_run_migration_150();
+    update_option( 'kechoo_core_db_version', '1.5.0' );
+}
+```
+
+Migration requirements:
+
+- Run only after a production database backup.
+- Be safe to run more than once.
+- Avoid deleting existing data.
+- Log meaningful success or failure states.
+- Fail closed if a step cannot complete.
+- Avoid expensive schema checks on every frontend request.
+- Include rollback or recovery notes in the deployment report.
+
+Migration release flow:
+
+```text
+1. Build and test migration on local/staging.
+2. Record database impact in the pull request or deployment note.
+3. Back up production database.
+4. Deploy main or the release tag to production.
+5. Run the migration through plugin activation/admin upgrade/controlled CLI.
+6. Verify pages, RFQ, WooCommerce, and affected data.
+7. Keep the backup until the release is accepted.
+```
+
+### Content Publishing
+
+For content-only changes, do not use database migrations unless the content is a required system seed.
+
+Recommended channels:
+
+- Small page edits: WordPress admin editor.
+- Product data: reviewed CSV import or controlled importer.
+- SEO articles: GitHub Markdown draft -> human review -> WordPress draft/post.
+- Menus and WooCommerce settings: manual admin checklist.
+- Media: WordPress uploads or object storage, not Git.
+
+If repository default page copy changes in `class-kechoo-site-setup.php`, existing WordPress pages are not automatically overwritten. Update existing pages separately through WordPress admin or a one-time script after backup.
 
 ## Verification Checklist
 
