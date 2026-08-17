@@ -28,6 +28,17 @@ final class Kechoo_Selector {
 		return function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/products/' );
 	}
 
+	private static function has_any_terms() {
+		foreach ( array_keys( self::$taxonomies ) as $taxonomy ) {
+			$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
+			if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public static function render( $atts ) {
 		$atts = shortcode_atts(
 			array(
@@ -38,6 +49,11 @@ final class Kechoo_Selector {
 		);
 
 		$compact = 'true' === $atts['compact'];
+
+		if ( ! self::has_any_terms() ) {
+			return '<div class="kechoo-selector-empty"><p>' . esc_html__( 'Blade selection is being prepared. Send your application, material, and machine details for a technical quote.', 'kechoo-core' ) . '</p><a class="kechoo-button" href="' . esc_url( home_url( '/request-a-quote/' ) ) . '">' . esc_html__( 'Request a Blade Quote', 'kechoo-core' ) . '</a></div>';
+		}
+
 		ob_start();
 		?>
 		<form class="kechoo-selector<?php echo $compact ? ' kechoo-selector--compact' : ''; ?>" action="<?php echo esc_url( self::shop_url() ); ?>" method="get" data-kechoo-selector>
@@ -52,7 +68,7 @@ final class Kechoo_Selector {
 					$terms = get_terms(
 						array(
 							'taxonomy'   => $taxonomy,
-							'hide_empty' => true,
+							'hide_empty' => false,
 						)
 					);
 					$current = isset( $_GET[ $taxonomy ] ) ? sanitize_title( wp_unslash( $_GET[ $taxonomy ] ) ) : '';

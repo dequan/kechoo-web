@@ -5,3 +5,7 @@ wp-content/plugins/woocommerce/
 wp-content/plugins/woocommerce-paypal-payments/
 test-site/playground.stdout.log
 test-site/playground.stderr.log
+
+# Astro prototype build outputs (legacy, not part of the WordPress site)
+.astro/
+dist/

@@ -33,7 +33,7 @@ update_option( 'woocommerce_calc_taxes', 'no' );
 update_option( 'woocommerce_coming_soon', 'no' );
 update_option( 'woocommerce_store_pages_only', 'no' );
 update_option( 'woocommerce_onboarding_profile', array( 'completed' => true, 'skipped' => true ) );
-update_option( 'kechoo_test_catalog_notice', 'Prices, stock, dispatch times, MOQ, compatibility, and shipping rates are test data only.' );
+update_option( 'kechoo_test_catalog_notice', 'Catalog specifications are based on public competitor reference data; verify SKU dimensions and pricing before production launch.' );
 
 $test_admin = get_user_by( 'login', 'kechoo-admin' );
 if ( $test_admin ) {
@@ -216,17 +216,25 @@ $catalog      = json_decode( file_get_contents( $catalog_file ), true, 512, JSON
 $image_id     = kechoo_test_catalog_image();
 $sales_rank   = 90;
 
+$tech_labels = array(
+	'hardened' => 'Hardened',
+	'bi-metal' => 'Bi-Metal',
+	'carbide'  => 'Carbide-Tipped',
+);
+
 foreach ( $catalog as $item ) {
 	$product_id = wc_get_product_id_by_sku( $item['sku'] );
 	$product    = $product_id ? wc_get_product( $product_id ) : new WC_Product_Simple();
+	$tech_label = isset( $tech_labels[ $item['technology'] ] ) ? $tech_labels[ $item['technology'] ] : ucwords( str_replace( '-', ' ', $item['technology'] ) );
 
 	$product->set_name( $item['name'] );
 	$product->set_slug( sanitize_title( $item['name'] ) );
 	$product->set_status( 'publish' );
 	$product->set_catalog_visibility( 'visible' );
 	$product->set_description(
-		'<p>Local test-catalog product for validating KECHOO selection, product, cart, checkout, and RFQ flows.</p>' .
-		'<p><strong>Test data notice:</strong> Price, stock, dispatch, MOQ, compatibility, and performance wording must be replaced with verified KECHOO data before production.</p>'
+		'<p><strong>' . esc_html( $tech_label ) . ' bandsaw blade</strong> for ' . esc_html( $item['category'] ) . ' cutting.</p>' .
+		'<p><strong>Specification:</strong> ' . esc_html( $item['length'] ) . ' × ' . esc_html( $item['width'] ) . ' × ' . esc_html( $item['thickness'] ) . ' — ' . esc_html( $item['tooth_pitch'] ) . '.</p>' .
+		'<p>' . esc_html( $item['selection_rationale'] ) . '</p>'
 	);
 	$product->set_short_description( $item['selection_rationale'] );
 	$product->set_sku( $item['sku'] );
@@ -268,8 +276,8 @@ foreach ( $catalog as $item ) {
 	foreach ( $meta as $key => $value ) {
 		update_post_meta( $product_id, '_kechoo_' . $key, sanitize_text_field( $value ) );
 	}
-	update_post_meta( $product_id, '_kechoo_test_data', '1' );
-	update_post_meta( $product_id, '_kechoo_image_status', 'Temporary generated visual — replace with verified SKU photography.' );
+	update_post_meta( $product_id, '_kechoo_catalog_source', 'foxbc-reference' );
+	update_post_meta( $product_id, '_kechoo_image_status', 'Placeholder visual — replace with verified SKU photography.' );
 	update_post_meta( $product_id, 'total_sales', $sales_rank );
 	$sales_rank -= 10;
 }

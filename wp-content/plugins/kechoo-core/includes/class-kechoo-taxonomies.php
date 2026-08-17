@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Kechoo_Taxonomies {
+	const TERMS_VERSION = '1.1.0';
+
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register' ) );
 		add_action( 'init', array( __CLASS__, 'seed_terms' ), 20 );
@@ -64,7 +66,7 @@ final class Kechoo_Taxonomies {
 	}
 
 	public static function seed_terms() {
-		if ( get_option( 'kechoo_terms_seeded' ) ) {
+		if ( self::TERMS_VERSION === get_option( 'kechoo_terms_seeded' ) ) {
 			return;
 		}
 
@@ -79,6 +81,21 @@ final class Kechoo_Taxonomies {
 				'bi-metal' => 'Bi-Metal',
 				'carbide'  => 'Carbide',
 			),
+			'kechoo_cut_material' => array(
+				'frozen-meat-bone'        => 'Frozen Meat & Bone',
+				'softwood-hardwood'       => 'Softwood & Hardwood',
+				'wood-plywood-composite'  => 'Wood, Plywood & Composite',
+				'carbon-steel'            => 'Carbon Steel',
+				'steel-tube-profile'      => 'Steel Tube & Profile',
+				'thin-gauge-metal'        => 'Thin Gauge Metal',
+				'high-alloy-abrasive-metal'=> 'High-Alloy & Abrasive Metal',
+			),
+			'kechoo_machine' => array(
+				'butcher-band-saws'          => 'Butcher Band Saws',
+				'woodworking-band-saws'      => 'Woodworking Band Saws',
+				'vertical-metal-band-saws'   => 'Vertical Metal Band Saws',
+				'rigid-production-band-saws' => 'Rigid Production Band Saws',
+			),
 		);
 
 		foreach ( $terms as $taxonomy => $items ) {
@@ -89,6 +106,6 @@ final class Kechoo_Taxonomies {
 			}
 		}
 
-		update_option( 'kechoo_terms_seeded', 1, false );
+		update_option( 'kechoo_terms_seeded', self::TERMS_VERSION, false );
 	}
 }

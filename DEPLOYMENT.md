@@ -198,6 +198,43 @@ Can wait for ecommerce phase:
 - PayPal credentials
 - exact automatic shipping rates
 
+## Importing the product catalog
+
+The catalog data lives in `data-templates/products-public-lite.json` (31 real band-saw blade SKUs converted from public competitor reference specifications). Two import paths are provided.
+
+### WP-CLI importer (recommended)
+
+The importer ships with the KECHOO Core plugin at `wp-content/plugins/kechoo-core/cli/import-catalog.php`. It creates taxonomy terms, products, technical meta, and category assignments in one idempotent run. Products are matched by SKU, so repeat runs update instead of duplicating.
+
+```bash
+# 1. Upload the catalog JSON to the server.
+scp data-templates/products-public-lite.json user@vps:/tmp/
+
+# 2. From the WordPress root, preview first.
+cd /www/wwwroot/kechoo.com
+wp eval-file wp-content/plugins/kechoo-core/cli/import-catalog.php /tmp/products-public-lite.json --dry-run
+
+# 3. Import for real.
+wp eval-file wp-content/plugins/kechoo-core/cli/import-catalog.php /tmp/products-public-lite.json
+
+# 4. Remove the temporary data file.
+rm /tmp/products-public-lite.json
+```
+
+Requires WooCommerce to be active and `wp` (WP-CLI) available on the host. The importer reuses `Kechoo_Taxonomies::seed_terms()`, so all four selector dimensions (application, material, machine, and blade technology) are created automatically.
+
+### WooCommerce CSV import (fallback)
+
+If WP-CLI is not available, use the native WooCommerce importer with the pre-formatted CSV:
+
+1. WordPress admin → Products → Import.
+2. Upload `data-templates/products-public-lite-import.csv`.
+3. Review the "Existing products" mapping and run the import.
+
+The CSV already contains `Taxonomy: kechoo_*` columns for the custom taxonomies and `Meta: _kechoo_*` columns for the technical specifications, so no manual column mapping is needed.
+
+Product images are not included in either import path. Upload verified SKU photography separately and attach it through the media library.
+
 ## Legal pages
 
 The site includes draft pages for:
