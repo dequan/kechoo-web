@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'KECHOO_THEME_VERSION', '1.2.0' );
+define( 'KECHOO_THEME_VERSION', '1.3.0' );
 
 function kechoo_theme_setup() {
 	load_theme_textdomain( 'kechoo', get_template_directory() . '/languages' );
@@ -107,4 +107,12 @@ add_filter( 'woocommerce_add_to_cart_fragments', 'kechoo_cart_count_fragment' );
 
 function kechoo_shop_url() {
 	return function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/products/' );
+}
+
+function kechoo_whatsapp_url() {
+	return 'https://wa.me/8619171421916';
+}
+
+function kechoo_whatsapp_manager() {
+	return 'Don';
 }

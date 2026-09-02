@@ -1,0 +1,59 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/",
+  "features": {
+    "networking": true
+  },
+  "steps": [
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "wordpress.org/plugins",
+        "slug": "woocommerce"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "git:directory",
+        "url": "https://github.com/dequan/kechoo-web.git",
+        "ref": "HEAD",
+        "path": "wp-content/plugins/kechoo-core"
+      },
+      "options": {
+        "activate": true,
+        "targetFolderName": "kechoo-core"
+      }
+    },
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "git:directory",
+        "url": "https://github.com/dequan/kechoo-web.git",
+        "ref": "HEAD",
+        "path": "wp-content/themes/kechoo"
+      },
+      "options": {
+        "activate": true,
+        "targetFolderName": "kechoo"
+      }
+    },
+    {
+      "step": "writeFiles",
+      "writeToPath": "/wordpress/kechoo-test-site",
+      "filesTree": {
+        "resource": "git:directory",
+        "url": "https://github.com/dequan/kechoo-web.git",
+        "ref": "HEAD",
+        "path": "test-site"
+      }
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php require_once '/wordpress/wp-load.php'; require_once ABSPATH . 'wp-admin/includes/plugin.php'; if ( ! is_plugin_active( 'kechoo-core/kechoo-core.php' ) ) { activate_plugin( 'kechoo-core/kechoo-core.php' ); } switch_theme( 'kechoo' ); require '/wordpress/kechoo-test-site/seed-products.php';"
+    }
+  ]
+}

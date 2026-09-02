@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Kechoo_Site_Setup {
-	const CONTENT_VERSION = '1.4.0';
+	const CONTENT_VERSION = '1.5.0';
 
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'maybe_ensure_pages' ), 30 );
@@ -70,7 +70,7 @@ final class Kechoo_Site_Setup {
 			),
 			'contact' => array(
 				'title'   => 'Contact KECHOO',
-				'content' => '<h2>Tell us what you need to cut</h2><p>Include the application, workpiece material, machine model, blade dimensions, and expected quantity. A blade label or photo can help us confirm the specification.</p>[kechoo_rfq_form]',
+				'content' => '<h2>Tell us what you need to cut</h2><p>Include the application, workpiece material, machine model, blade dimensions, and expected quantity. A blade label or photo can help us confirm the specification.</p><h3>Message the manager directly</h3><p>For fast replies on pricing, availability, custom sizes, and distributor orders, message Don directly on WhatsApp:</p><p><a href="https://wa.me/8619171421916">Don · +86 191 7142 1916</a></p>[kechoo_rfq_form]',
 			),
 			'terms' => array(
 				'title'   => 'Terms and Conditions',
