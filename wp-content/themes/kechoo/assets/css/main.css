@@ -1005,6 +1005,46 @@ p {
   font-weight: 700;
 }
 
+.woocommerce-products-header .term-description {
+  max-width: 72ch;
+  color: var(--kechoo-ink-muted);
+  font-size: 1.05rem;
+}
+
+.woocommerce-products-header .term-description p + p {
+  margin-block-start: var(--space-3);
+}
+
+.kechoo-archive-guide {
+  max-width: 72ch;
+  margin-block-start: var(--space-8);
+  padding-block-start: var(--space-7);
+  border-block-start: 1px solid var(--kechoo-border);
+}
+
+.kechoo-archive-guide h2 {
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+}
+
+.kechoo-archive-guide > * + * {
+  margin-block-start: var(--space-4);
+}
+
+.kechoo-archive-guide ul {
+  padding-inline-start: 1.25rem;
+}
+
+.kechoo-archive-guide li + li {
+  margin-block-start: var(--space-2);
+}
+
+.kechoo-archive-guide__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  font-weight: 700;
+}
+
 .kechoo-quote-price {
   display: inline-flex;
   align-items: center;

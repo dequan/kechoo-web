@@ -251,6 +251,10 @@ foreach ( $catalog as $item ) {
 
 	$category_id = kechoo_test_term_id( 'product_cat', sanitize_title( $item['category'] ), $item['category'] );
 	wp_set_object_terms( $product_id, array( $category_id ), 'product_cat' );
+	if ( taxonomy_exists( 'product_brand' ) ) {
+		$brand_id = kechoo_test_term_id( 'product_brand', 'kechoo', 'KECHOO' );
+		wp_set_object_terms( $product_id, array( $brand_id ), 'product_brand' );
+	}
 	wp_set_object_terms( $product_id, $item['application'], 'kechoo_application' );
 	wp_set_object_terms( $product_id, $item['technology'], 'kechoo_blade_technology' );
 	kechoo_test_term_id( 'kechoo_cut_material', $item['cut_material'], $item['cut_material_name'] );

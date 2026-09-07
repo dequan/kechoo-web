@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KECHOO Core
  * Description: Product taxonomy, blade selection, technical specifications, and RFQ workflow for KECHOO.
- * Version: 1.4.2
+ * Version: 1.6.0
  * Requires at least: 6.5
  * Requires PHP: 8.1
  * Author: KECHOO
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'KECHOO_CORE_VERSION', '1.4.2' );
+define( 'KECHOO_CORE_VERSION', '1.6.0' );
 define( 'KECHOO_CORE_PATH', plugin_dir_path( __FILE__ ) );
 
 function kechoo_is_public_lite_mode() {
@@ -26,6 +26,7 @@ require_once KECHOO_CORE_PATH . 'includes/class-kechoo-product-meta.php';
 require_once KECHOO_CORE_PATH . 'includes/class-kechoo-selector.php';
 require_once KECHOO_CORE_PATH . 'includes/class-kechoo-rfq.php';
 require_once KECHOO_CORE_PATH . 'includes/class-kechoo-site-setup.php';
+require_once KECHOO_CORE_PATH . 'includes/class-kechoo-seo.php';
 
 function kechoo_core_boot() {
 	Kechoo_Taxonomies::init();
@@ -33,6 +34,7 @@ function kechoo_core_boot() {
 	Kechoo_Selector::init();
 	Kechoo_RFQ::init();
 	Kechoo_Site_Setup::init();
+	Kechoo_SEO::init();
 }
 add_action( 'plugins_loaded', 'kechoo_core_boot' );
 

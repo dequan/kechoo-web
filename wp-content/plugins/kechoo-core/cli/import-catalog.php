@@ -159,6 +159,7 @@ foreach ( $catalog as $item ) {
 	}
 
 	$term_map = array(
+		'product_brand'          => array( 'kechoo', 'KECHOO' ),
 		'product_cat'            => array( sanitize_title( $item['category'] ), $item['category'] ),
 		'kechoo_application'     => array( $item['application'], $item['category'] ),
 		'kechoo_blade_technology' => array( $technology, $tech_label ),
@@ -167,6 +168,9 @@ foreach ( $catalog as $item ) {
 	);
 
 	foreach ( $term_map as $taxonomy => $term ) {
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			continue;
+		}
 		$term_id = kechoo_import_term_id( $taxonomy, $term[0], $term[1] );
 		if ( $term_id ) {
 			wp_set_object_terms( $product_id, array( $term_id ), $taxonomy );

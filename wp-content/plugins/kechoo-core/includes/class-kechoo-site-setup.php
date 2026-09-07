@@ -10,7 +10,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Kechoo_Site_Setup {
-	const CONTENT_VERSION = '1.5.0';
+	const CONTENT_VERSION = '1.6.0';
+
+	private static function page_description( $slug ) {
+		$descriptions = array(
+			'find-your-blade' => 'Find the right bandsaw blade by application, material, machine type, and blade technology. Compare matching KECHOO blade specifications.',
+			'request-a-quote' => 'Request a technical bandsaw blade quote from KECHOO. Send your material, machine, blade dimensions, application, and required quantity.',
+			'distributors' => 'Discuss wholesale bandsaw blade supply, OEM packaging, regional distribution, catalog support, and long-term cooperation with KECHOO.',
+			'applications' => 'Choose bandsaw blades by application, including food and bone processing, woodworking, fabrication, and industrial metal cutting.',
+			'technology' => 'Compare hardened, bi-metal M42, and carbide-tipped bandsaw blade technologies and find the right construction for your cutting application.',
+			'resources' => 'Bandsaw blade selection, break-in, tooth pitch, machine setup, coolant, tension, troubleshooting, and operating guidance from KECHOO.',
+			'about' => 'Learn about KECHOO industrial bandsaw blades, manufacturing focus, application support, and supply for factories and distributors worldwide.',
+			'shipping' => 'Learn how KECHOO ships bandsaw blades from China, how delivery options are quoted, and which destination costs buyers should expect.',
+			'contact' => 'Contact KECHOO for bandsaw blade selection, pricing, availability, custom sizes, OEM supply, and distributor inquiries.',
+			'terms' => 'Read the KECHOO terms and conditions for orders, pricing, product specifications, shipping, returns, and commercial quotations.',
+			'privacy-policy' => 'Read how KECHOO collects, uses, shares, protects, and retains information submitted through its website and sales workflows.',
+			'returns-refunds' => 'Review the KECHOO returns, refunds, replacement, and quality-claim process for stock and custom bandsaw blades.',
+			'customs-duties' => 'Understand import duties, taxes, customs brokerage, destination fees, documentation, and Incoterms for KECHOO shipments from China.',
+		);
+
+		return isset( $descriptions[ $slug ] ) ? $descriptions[ $slug ] : '';
+	}
 
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'maybe_ensure_pages' ), 30 );
@@ -91,6 +111,7 @@ final class Kechoo_Site_Setup {
 		);
 
 		foreach ( $pages as $slug => $page ) {
+			$page['excerpt'] = self::page_description( $slug );
 			$existing_page = get_page_by_path( $slug, OBJECT, 'page' );
 			if ( $existing_page ) {
 				if ( get_post_meta( $existing_page->ID, '_kechoo_generated_page', true ) || 'privacy-policy' === $slug ) {
@@ -99,6 +120,7 @@ final class Kechoo_Site_Setup {
 							'ID'           => $existing_page->ID,
 							'post_title'   => $page['title'],
 							'post_content' => $page['content'],
+							'post_excerpt' => $page['excerpt'],
 							'post_status'  => 'publish',
 						)
 					);
@@ -112,6 +134,7 @@ final class Kechoo_Site_Setup {
 					'post_title'   => $page['title'],
 					'post_name'    => $slug,
 					'post_content' => $page['content'],
+					'post_excerpt' => $page['excerpt'],
 					'post_status'  => 'publish',
 					'post_type'    => 'page',
 				),
