@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KECHOO First-Party Sitemap
  * Description: Backward-compatible first-party XML sitemap for KECHOO installations whose core plugin predates the sitemap service.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires PHP: 8.1
  *
  * @package Kechoo
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Kechoo_First_Party_Sitemap {
-	const VERSION  = '1.0.1';
+	const VERSION  = '1.0.2';
 	const PAGE_SIZE = 1000;
 
 	private static $types = array(
@@ -35,6 +35,28 @@ final class Kechoo_First_Party_Sitemap {
 		add_filter( 'query_vars', array( __CLASS__, 'query_vars' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'serve' ), 0 );
 		add_filter( 'robots_txt', array( __CLASS__, 'robots_txt' ), 9999, 2 );
+		add_filter( 'wp_robots', array( __CLASS__, 'utility_robots' ), 9999 );
+	}
+
+	public static function utility_robots( $robots ) {
+		$noindex = is_search() || is_404() || is_author();
+		if ( function_exists( 'is_cart' ) ) {
+			$noindex = $noindex || is_cart() || is_checkout() || is_account_page();
+		}
+		if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_taxonomy() ) ) {
+			foreach ( array( 'kechoo_application', 'kechoo_cut_material', 'kechoo_machine', 'kechoo_blade_technology', 'orderby', 'min_price', 'max_price' ) as $parameter ) {
+				if ( isset( $_GET[ $parameter ] ) && '' !== (string) wp_unslash( $_GET[ $parameter ] ) ) {
+					$noindex = true;
+					break;
+				}
+			}
+		}
+		if ( $noindex ) {
+			$robots['noindex'] = true;
+			$robots['follow']  = true;
+			unset( $robots['index'] );
+		}
+		return $robots;
 	}
 
 	public static function routes() {
