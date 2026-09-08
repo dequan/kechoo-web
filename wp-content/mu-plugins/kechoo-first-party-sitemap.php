@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KECHOO First-Party Sitemap
  * Description: Backward-compatible first-party XML sitemap for KECHOO installations whose core plugin predates the sitemap service.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires PHP: 8.1
  *
  * @package Kechoo
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 final class Kechoo_First_Party_Sitemap {
-	const VERSION  = '1.0.0';
+	const VERSION  = '1.0.1';
 	const PAGE_SIZE = 1000;
 
 	private static $types = array(
@@ -69,6 +69,10 @@ final class Kechoo_First_Party_Sitemap {
 		$page = max( 1, absint( get_query_var( 'kechoo_sitemap_page' ) ) );
 		$path = isset( $_SERVER['REQUEST_URI'] ) ? wp_parse_url( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH ) : '';
 		$file = basename( (string) $path );
+		if ( 'wp-sitemap.xml' === $file ) {
+			wp_safe_redirect( home_url( '/sitemap-index.xml' ), 301, 'KECHOO Sitemap' );
+			exit;
+		}
 
 		if ( ! $slug && 'sitemap-index.xml' === $file ) {
 			$slug = 'index';

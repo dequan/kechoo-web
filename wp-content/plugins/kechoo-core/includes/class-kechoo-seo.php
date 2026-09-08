@@ -88,6 +88,10 @@ final class Kechoo_SEO {
 		$page    = max( 1, absint( get_query_var( 'kechoo_sitemap_page' ) ) );
 		$request_path = isset( $_SERVER['REQUEST_URI'] ) ? wp_parse_url( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ), PHP_URL_PATH ) : '';
 		$filename     = basename( (string) $request_path );
+		if ( 'wp-sitemap.xml' === $filename ) {
+			wp_safe_redirect( home_url( '/sitemap-index.xml' ), 301, 'KECHOO Sitemap' );
+			exit;
+		}
 
 		if ( ! $sitemap && in_array( $filename, array( 'sitemap.xml', 'sitemap-index.xml' ), true ) ) {
 			$sitemap = 'index';
