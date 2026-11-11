@@ -16,8 +16,20 @@ final class Kechoo_RFQ {
 	public static function init() {
 		add_action( 'init', array( __CLASS__, 'register_post_type' ) );
 		add_shortcode( 'kechoo_rfq_form', array( __CLASS__, 'render_shortcode' ) );
+		add_filter( 'query_vars', array( __CLASS__, 'allow_legacy_quote_links' ) );
 		add_filter( 'manage_kechoo_rfq_posts_columns', array( __CLASS__, 'admin_columns' ) );
 		add_action( 'manage_kechoo_rfq_posts_custom_column', array( __CLASS__, 'admin_column_content' ), 10, 2 );
+	}
+
+	public static function allow_legacy_quote_links( $query_vars ) {
+		global $wp;
+
+		// Older quote links used WooCommerce's product routing parameter.
+		if ( 'request-a-quote' === $wp->request ) {
+			return array_diff( $query_vars, array( 'product' ) );
+		}
+
+		return $query_vars;
 	}
 
 	public static function register_post_type() {
@@ -97,7 +109,6 @@ final class Kechoo_RFQ {
 		}
 
 		$buyer_type = self::value( 'buyer_type', $atts['buyer_type'] );
-		$product    = self::value( 'product' );
 		?>
 		<form class="kechoo-rfq-form" method="post" enctype="multipart/form-data" novalidate data-kechoo-prevent-double-submit>
 			<?php wp_nonce_field( 'kechoo_submit_rfq', 'kechoo_rfq_nonce' ); ?>
@@ -127,7 +138,7 @@ final class Kechoo_RFQ {
 			<fieldset>
 				<legend><?php esc_html_e( 'Cutting requirement', 'kechoo-core' ); ?></legend>
 				<div class="kechoo-rfq-form__grid">
-					<?php self::text_field( 'product', __( 'Product or blade family', 'kechoo-core' ), false, 'text', '', $product ); ?>
+					<?php self::text_field( 'kechoo_product', __( 'Product or blade family', 'kechoo-core' ), false, 'text', '', self::value( 'product' ) ); ?>
 					<?php self::text_field( 'application', __( 'What are you cutting?', 'kechoo-core' ), true ); ?>
 					<?php self::text_field( 'material', __( 'Workpiece material', 'kechoo-core' ), true ); ?>
 					<?php self::text_field( 'machine', __( 'Machine brand and model', 'kechoo-core' ), false ); ?>
@@ -248,7 +259,8 @@ final class Kechoo_RFQ {
 
 		$fields = array( 'contact_name', 'email', 'company', 'country', 'buyer_type', 'product', 'application', 'material', 'machine', 'dimensions', 'quantity' );
 		foreach ( $fields as $field ) {
-			$value = isset( $_POST[ $field ] ) ? sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) : '';
+			$input = 'product' === $field && isset( $_POST['kechoo_product'] ) ? 'kechoo_product' : $field;
+			$value = isset( $_POST[ $input ] ) ? sanitize_text_field( wp_unslash( $_POST[ $input ] ) ) : '';
 			update_post_meta( $post_id, '_kechoo_rfq_' . $field, $value );
 		}
 		update_post_meta( $post_id, '_kechoo_rfq_message', isset( $_POST['message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['message'] ) ) : '' );

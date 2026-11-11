@@ -128,13 +128,7 @@ final class Kechoo_Product_Meta {
 
 		$dispatch   = get_post_meta( $product->get_id(), '_kechoo_dispatch_estimate', true );
 		$custom     = get_post_meta( $product->get_id(), '_kechoo_custom_size', true );
-		$quote_url  = add_query_arg(
-			array(
-				'product_id' => $product->get_id(),
-				'product'    => $product->get_name(),
-			),
-			home_url( '/request-a-quote/' )
-		);
+		$quote_url  = self::quote_url( $product );
 
 		echo '<div class="kechoo-product-buying-note">';
 		if ( $dispatch ) {
@@ -255,8 +249,8 @@ final class Kechoo_Product_Meta {
 	private static function quote_url( $product ) {
 		return add_query_arg(
 			array(
-				'product_id' => $product->get_id(),
-				'product'    => $product->get_name(),
+				'product_id'     => $product->get_id(),
+				'kechoo_product' => rawurlencode( $product->get_name() ),
 			),
 			home_url( '/request-a-quote/' )
 		);
